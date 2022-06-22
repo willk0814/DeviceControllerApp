@@ -125,8 +125,8 @@ void get_input(){
       // establish indices of first and second appearance of '/n'
       int codeIndex = input.indexOf("3");
 
-      Serial.print("index of code: ");
-      Serial.println(codeIndex);
+//      Serial.print("index of code: ");
+//      Serial.println(codeIndex);
 
       char parsedInput_1 = input.charAt(codeIndex+2);
       char parsedInput_2 = input.charAt(codeIndex+3);
@@ -134,13 +134,13 @@ void get_input(){
       parsedInput += parsedInput_1;
       parsedInput += parsedInput_2;
       
-      Serial.print("Parsed Input: ");
-      Serial.println(parsedInput);
+//      Serial.print("Parsed Input: ");
+//      Serial.println(parsedInput);
 
       int scaledInput = parsedInput.toInt() - 48;
 
-      Serial.print("Scaled Input: ");
-      Serial.println(scaledInput);
+//      Serial.print("Scaled Input: ");
+//      Serial.println(scaledInput);
 
       String finalInput = String(scaledInput);
 

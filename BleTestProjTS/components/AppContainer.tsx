@@ -53,20 +53,14 @@ export default function AppContainer() {
     const [connected, setConnected] = useState(false)
     const [connectedDevice, setConnectedDevice] = useState()
     const [connectedDeviceObj, setConnectedDeviceObj] = useState<Device>()
-
+    const [connectedDeviceName, setConnectedDeviceName] = useState('')
 
     // SV's connected Device Services and Characteristics
     const [services, setServices] = useState<Service[]>([])
     const [descriptors, setDescriptors] = useState<Descriptor[]>([])
     const [characteristics, setCharacteristics] = useState<Characteristic[]>([])
-    const [visibleCharacteristics, setVisibleCharacteristics] = useState(false)
 
     const [servicesMap, setServicesMap] = useState({})
-
-
-    const [desiredDevice, setDesiredDevice] = useState()
-
-    const [codeResponse, setCodeResponse] = useState<Characteristic>()
 
     // Progress SV's
     const [isLoading, setIsLoading] = useState(false)
@@ -145,6 +139,7 @@ export default function AppContainer() {
             setConnected(true)
             setConnectedDevice(device.id)
             setConnectedDeviceObj(device)
+            setConnectedDeviceName(device.name)
             await device.discoverAllServicesAndCharacteristics()
             const services = await device.services()
 
@@ -187,30 +182,51 @@ export default function AppContainer() {
             base64.encode(operationCode)
         )
         // if the operation is a test that yields data, then retrieve the data after the correct amount of time
-        if (operationCode == "1") {
-            setTimeout(() => {
-                readData(1)
-            }, 8000)
-        } else if (operationCode == "2") {
-            setTimeout(() => {
-                readData(2)
-            }, 16000)
-        }
+        // if (operationCode == "1") {
+        //     setTimeout(() => {
+        //         readData(1)
+        //     }, 8000)
+        // } else if (operationCode == "2") {
+        //     setTimeout(() => {
+        //         readData(2)
+        //     }, 16000)
+        // }
     }
 
     // function to read the returned data from the SMURF 
     const readData = async (testType) => {
-        let data = null
-        let data_1 = null
 
-        if (testType == 1) {
+        console.log(`Retrieving data from Operation:  ${testType}`)
+        let data = undefined
+        let data_1 = undefined
+
+        if (testType == "8") {
+            console.log('Reached')
+            await connectedDeviceObj.readCharacteristicForService(COMM_SERVICE_UUID, DATA_CHAR_1_UUID).then(async () => {
+
+            })
+            console.log('Printing data for small flex test')
+            console.log(data)
+        } else if (testType == "9") {
             data = await connectedDeviceObj.readCharacteristicForService(COMM_SERVICE_UUID, DATA_CHAR_1_UUID)
-        } else if (testType = 2) {
-            data = await connectedDeviceObj.readCharacteristicForService(COMM_SERVICE_UUID, DATA_CHAR_1_UUID)
+
 
             data_1 = connectedDeviceObj.readCharacteristicForService(COMM_SERVICE_UUID, DATA_CHAR_2_UUID)
+
+            console.log('Printing data for small large test')
+            console.log(data)
+            console.log(data_1)
         }
         console.log(data)
+    }
+
+
+    const readSmallData = async () => {
+        const data = await connectedDeviceObj.readCharacteristicForService(
+            COMM_SERVICE_UUID,
+            DATA_CHAR_1_UUID)
+
+        console.log(base64.decode(data.value))
     }
 
     useEffect(() => {
@@ -232,10 +248,11 @@ export default function AppContainer() {
             <DeviceControls
                 connected={connected}
                 disconnect={disconnectDevice}
-                connectedDevice={connectedDevice}
+                connectedDeviceName={connectedDeviceName}
                 printServices={printServices}
                 printState={testBleState}
-                sendCommand={sendOperationCode} />
+                sendCommand={sendOperationCode}
+                readData={readSmallData} />
         </View>
     )
 }
