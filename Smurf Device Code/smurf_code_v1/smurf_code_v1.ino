@@ -2,13 +2,13 @@
 // Calibration should be done beforehand to determine preload and loadcell calibration factor
 
 //Includes required to use Roboclaw library
-#include <SoftwareSerial.h>
-#include "RoboClaw.h"
-#include "HX711.h"
+#include <SoftwareSerial.h> //needed for serial connection to the BT module
+#include "RoboClaw.h"      //Robot Library that is all ove sparks lab
+#include "HX711.h"         //Load cell library
 #include <Arduino.h>
-#include "Adafruit_BLE.h"
-#include "Adafruit_BluefruitLE_UART.h"
-#include "Adafruit_ATParser.h"
+#include "Adafruit_BLE.h"    //BT module library
+#include "Adafruit_BluefruitLE_UART.h"   //needed for Serial UART connection to BT module
+#include "Adafruit_ATParser.h"           //derivative class of BT module for managing buffer
 
 // Set software serial and init instances of roboclaw/loadcell
 SoftwareSerial serial(10,11);
@@ -103,61 +103,38 @@ void home_encoder(){
 // Get serial input from python user interface
 void get_input(){
   ble.flush();
-//  while (Serial.available()) {
-//    if (Serial.available() >0) {
-//      ble.println(F("AT+GATTCHAR=3"));             // gotta read from the bt module
-//      int len = ble.readraw();
-//      char c = Serial.read();  //gets one byte from serial buffer
-//      input += c; //makes the string readString
-//      Serial.println("get_input()");
-      uint16_t bufSize = 20;
-      uint16_t timeout = 1000;
-      char inputBuffer[bufSize];
-      ble.atcommandStrReply("AT+GATTCHAR=3",inputBuffer,bufSize,timeout);
-//      ble.println("AT+GATTCHAR=3");
-      delay(2000);
-      Serial.println("sent");
-      input = inputBuffer;
-
-      Serial.print("Unparsed Input: ");
-      Serial.println(input);
-      
-      // establish indices of first and second appearance of '/n'
-      int codeIndex = input.indexOf("3");
-
-//      Serial.print("index of code: ");
-//      Serial.println(codeIndex);
-
-      char parsedInput_1 = input.charAt(codeIndex+2);
-      char parsedInput_2 = input.charAt(codeIndex+3);
-      String parsedInput;
-      parsedInput += parsedInput_1;
-      parsedInput += parsedInput_2;
-      
-//      Serial.print("Parsed Input: ");
-//      Serial.println(parsedInput);
-
-      int scaledInput = parsedInput.toInt() - 48;
-
-//      Serial.print("Scaled Input: ");
-//      Serial.println(scaledInput);
-
-      String finalInput = String(scaledInput);
-
-      Serial.print("Final Input: ");
-      Serial.println(finalInput);
-
-      if (finalInput != currentCommand) {
-        input = finalInput;
-        currentCommand = finalInput;
-        ble.println(F ("AT+GATTCHAR=3,5"));  
-        ble.flush();
-      }
-      
-
-      
-//    }//if (Serial.available() >0)
-//  }//while (Serial.available())
+  uint16_t bufSize = 20;  //Buffer of max size for characteristic
+  uint16_t timeout = 1000;  //one second timeout delay
+  char inputBuffer[bufSize];
+  //Read Ble buffer after query for command characteristic
+  ble.atcommandStrReply("AT+GATTCHAR=3",inputBuffer,bufSize,timeout);
+  input = inputBuffer;
+  Serial.print("Unparsed Input: ");    // debug
+  Serial.println(input);         // debug
+  int codeIndex = input.indexOf("3");  //Finds the index of where the ATcommand ends
+  Serial.print("index of code: ");     // debug
+  Serial.println(codeIndex);          //debug
+  char parsedInput_1 = input.charAt(codeIndex+2); //get first digit
+  char parsedInput_2 = input.charAt(codeIndex+3); //get second digit
+  //Commands are supposed to be one digit but for some unkown reason the received integers 0-8
+  //correspond to outputs 48-56
+  String parsedInput;
+  parsedInput += parsedInput_1;        //add first digit to parsing string
+  parsedInput += parsedInput_2;        //add second digit to parsing string
+  Serial.print("Parsed Input: ");      //debug
+  Serial.println(parsedInput);         //debug
+  int scaledInput = parsedInput.toInt() - 48;     //corrects input back to 0-8
+  Serial.print("Scaled Input: ");      //debug
+  Serial.println(scaledInput);          //debug
+  String finalInput = String(scaledInput);       // cast back to string
+  Serial.print("Final Input: ");       //debug
+  Serial.println(finalInput);          //debug
+  if (finalInput != currentCommand) {     //command should only be executed 1 time after recieved
+     input = finalInput;                   //This might cause error with repeating tests
+     currentCommand = finalInput;
+     ble.println(F ("AT+GATTCHAR=3,5"));     // resets the BT model to something else
+     ble.flush();                            //Resets required to flush the buffer
+  }else{input = "";}
 }//get_input()
 
 // Lower pushing foot until loadcell reads zero, the weight of the device will give a negative reading
@@ -197,17 +174,17 @@ void small_flextest(){
     get_bend_counts(bend_angles[i]);
     move_to(init_height + push_counts);
     delay(100);
-    ble.print("3.14"); //testing with pi
-    //    ble.print(scale.get_units()-preload);  // init_height drops leg until preload value is measured, this offsets the weight of smurf. We need to subtract this load to get the amount of force pushing against the plant.
+    //ble.print("3.14"); //testing with pi
+    ble.print(scale.get_units()-preload);  // init_height drops leg until preload value is measured, this offsets the weight of smurf. We need to subtract this load to get the amount of force pushing against the plant.
     ble.print(",");
   }//for (int i = 0; i < 4; i++)
   get_bend_counts(bend_angles[4]);
   move_to(init_height + push_counts);
   delay(100);
   ble.println(scale.get_units()-preload);  //subtract smurf weight here too
-//   ble.println();
   Serial.println("finshing smallFlexTest");
-  ble.flush();
+   //perhaps we should add a delay here to give the buffer some time before we clear it
+  ble.flush();     //Resets required to flush the buffer
 }//small_flextest()
 
 
@@ -225,6 +202,8 @@ void large_flextest(){
     ble.print(",");
   }//for (int i = 0; i < 4; i++)
   ble.println();
+  //perhaps we should add a delay here to give the buffer some time before we clear it
+  
   ble.print(F("AT+GATTCHAR="));            //writes to the DATA BT characteristic
   ble.print( DATAChar2Id );
   ble.print( ",");
@@ -239,6 +218,7 @@ void large_flextest(){
   move_to(init_height + push_counts);
   delay(100);
   ble.println(scale.get_units()-preload);  //subtract smurf weight here too
+  //perhaps we should add a delay here to give the buffer some time before we clear it
   ble.flush();
 }//large_flextest()
 
@@ -264,29 +244,36 @@ void setup() {
   //Set PID Coefficients
   roboclaw.SetM1VelocityPID(address,Kp,Ki,Kd,qpps);
   roboclaw.SetM1PositionPID(address, 20.0, 0.0, 0.0, 0,0,0,30000); //SetM1PositionPID(uint8_t address,float kp_fp,float ki_fp,float kd_fp,uint32_t kiMax,uint32_t deadzone,uint32_t min,uint32_t max)
+
   //Setup for the Bluetooth module
   ble.begin();
-  ble.factoryReset();      
+  ble.factoryReset();      //factory reset required for consistent boot
+  //Sets the name of the device; make sure the next 2 lines match
   Serial.println(F("Setting device name to 'Bluefruit SMURF_1': "));
   ble.println(F("AT+GAPDEVNAME=Bluefruit SMURF_1"));
   Serial.println( F("Adding Service 0x1234 with 3 chars 0x2345 & 0x6789 & 0xABCD") );
+  //creates service
   ble.println( F("AT+GATTADDSERVICE=uuid=0x1234") );
-  ble.reset();
+  ble.reset();                             //reset required to flush buffer
+  //Adds data characteristic; properties 0x02 = Broadcast for Read; limited to 20 bytes
   ble.println( F("AT+GATTADDCHAR=UUID=0x2345,PROPERTIES=0x02,MIN_LEN=1,MAX_LEN=20,DATATYPE=string,DESCRIPTION=Measurements,VALUE=abc"));
-  DATACharId = 1;
+  DATACharId = 1;        //Ble assigns ID's on a first come first served basis
   Serial.print("data characteristic has ID:");
   Serial.println(DATACharId);
-  ble.reset();
+  ble.reset();                          //reset required to flush buffer
+  //second data characteristic for use in large flextest
   ble.println( F("AT+GATTADDCHAR=UUID=0xABCD,PROPERTIES=0x02,MIN_LEN=1,MAX_LEN=20,DATATYPE=string,DESCRIPTION=Measurements2,VALUE=abc"));
   DATAChar2Id = 2;
   Serial.print("data characteristic has ID:");
   Serial.println(DATAChar2Id);
-  ble.reset();
+  ble.reset();                          //reset required to flush buffer
+  //adds the command characteristic; properties 0x08 = Broadcast for Write; just an int
   ble.println( F("AT+GATTADDCHAR=UUID=0x6789,PROPERTIES=0x08,MIN_LEN=4,MAX_LEN=4,DATATYPE=INTEGER,DESCRIPTION=CommandValue,VALUE=3"));
   CMDCharId = 3;
   Serial.print("Command characteristic has ID:");
   Serial.println(CMDCharId);
-  ble.reset();
+  ble.reset();                        //reset required to flush buffer
+  //advertise these changes over the broadcast
   ble.println( F("AT+GAPSETADVDATA=02-01-06-05-02-0d-18-0a-18") );
   /* Reset the device for the new service setting changes to take effect */
   Serial.println(F("Performing a SW reset (service changes require a reset): "));
