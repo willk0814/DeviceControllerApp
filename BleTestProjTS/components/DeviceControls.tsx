@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import { Device } from 'react-native-ble-plx'
 import { read } from 'fs'
 
-export default function DeviceControls({ connected, disconnect, connectedDeviceName, printServices, printState, sendCommand, readData }) {
+export default function DeviceControls({ connected, disconnect, connectedDeviceName, printServices, printState, sendCommand, readData, readLargeData }) {
     return (
         <View style={styles.deviceControlsContainer}>
             <View style={styles.headerView}>
@@ -53,11 +53,11 @@ export default function DeviceControls({ connected, disconnect, connectedDeviceN
                     <Text style={styles.buttonText}>Operation 1</Text>
                 </TouchableOpacity>
 
-                {/* <TouchableOpacity
+                <TouchableOpacity
                     style={styles.buttonStyle}
                     onPress={() => sendCommand("2")}>
                     <Text style={styles.buttonText}>Operation 2</Text>
-                </TouchableOpacity> */}
+                </TouchableOpacity>
 
 
                 <TouchableOpacity
@@ -114,7 +114,7 @@ export default function DeviceControls({ connected, disconnect, connectedDeviceN
 
                     <TouchableOpacity
                         style={[styles.buttonStyle, styles.rowButton]}
-                        onPress={() => readData("9")}>
+                        onPress={readLargeData}>
                         <Text style={styles.buttonText}>Retieve data</Text>
                     </TouchableOpacity>
                 </View>

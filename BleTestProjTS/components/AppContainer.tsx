@@ -229,6 +229,16 @@ export default function AppContainer() {
         console.log(base64.decode(data.value))
     }
 
+    const readLargeData = async () => {
+        const data = base64.decode(await connectedDeviceObj.readCharacteristicForService(
+            COMM_SERVICE_UUID, DATA_CHAR_1_UUID)) +
+            base64.decode(await connectedDeviceObj.readCharacteristicForService(
+                COMM_SERVICE_UUID,
+                DATA_CHAR_2_UUID))
+
+        console.log(data)
+    }
+
     useEffect(() => {
         return () => {
             ble.destroy();
@@ -252,7 +262,8 @@ export default function AppContainer() {
                 printServices={printServices}
                 printState={testBleState}
                 sendCommand={sendOperationCode}
-                readData={readSmallData} />
+                readData={readSmallData}
+                readLargeData={readLargeData} />
         </View>
     )
 }
