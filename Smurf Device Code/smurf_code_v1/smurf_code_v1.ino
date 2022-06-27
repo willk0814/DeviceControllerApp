@@ -73,7 +73,6 @@ int32_t CMDCharId;
 int32_t DATACharId;
 int32_t DATAChar2Id;                                       //Can remove these lines after we confirm they are useless
 
-
 // Display loadcell in kgs and adjust readings based on calibration factor
 void display_loadcell(){
   scale.set_scale(calibration_factor); //Adjust to this calibration factor
@@ -83,9 +82,9 @@ void display_loadcell(){
   //Serial.println();
 }//display_loadcell()
 
-
 // Home SMURF and reset encoder values to zero
 void home_encoder(){
+  Serial.println("Home Encoder function called");
   int enc_last = 0;
   int enc_now = 1;
   while (enc_last != enc_now){
@@ -97,8 +96,8 @@ void home_encoder(){
   }//while (enc_last != enc_now)
   roboclaw.ResetEncoders(address);
   roboclaw.BackwardM1(0x80,0);  // stops foot
+  Serial.println("Home Encoder function finished");
 }//home_encoder()
-
 
 // Get serial input from python user interface
 void get_input(){
@@ -158,6 +157,7 @@ void get_init_height(){
 }//get_init_height()
 
 void move_to(int pos){
+  Serial.println("From move_to(): called");
   roboclaw.SpeedAccelDeccelPositionM1(address, 150000, 2000, 150000, pos, 0); //(address, 50000, 1000, 50000, pos, 0); for 5:1 ratio gears // SpeedAccelDeccelPositionM1(address, accel, speed, deccel, position, flag);
   delay(1000);
 }//move_to(int pos
@@ -301,6 +301,7 @@ void loop() {
         move_to(init_height);
       }
       else if (input ==  "3") {  // Move to home position
+        Serial.println("3 recieved");
         move_to(0);
         Serial.println("This is a test");
       }

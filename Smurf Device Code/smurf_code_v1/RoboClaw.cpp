@@ -509,6 +509,7 @@ bool RoboClaw::ForwardM1(uint8_t address, uint8_t speed){
 }
 
 bool RoboClaw::BackwardM1(uint8_t address, uint8_t speed){
+	Serial.println("This function has been called");
 	return write_n(3,address,M1BACKWARD,speed);
 }
 

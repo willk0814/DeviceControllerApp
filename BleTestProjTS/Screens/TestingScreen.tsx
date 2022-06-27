@@ -1,25 +1,24 @@
 import React, { useEffect, useState, useReducer } from 'react'
-import { View, Text, StyleSheet, SafeAreaViewComponent } from 'react-native'
+import { View, Text, StyleSheet, Modal } from 'react-native'
 import { BleManager, Device, Service, Characteristic, Descriptor } from 'react-native-ble-plx'
 import base64 from 'react-native-base64'
 
 // Page imports
 import DeviceControls from '../components/DeviceControls'
 import ConnectionContainer from '../components/ConnectionContainer'
+import ConnectionPopUp from '../components/ConnectionPopUp'
+
+import DataContainer from '../components/DataContainer'
+import ControlsContainer from '../components/ControlsContainer'
+import OutputContainer from '../components/OutputContainer'
 
 const ble = new BleManager();
 
 // Declared UUIDS for services and Characteristics:
 // Communication Service UUID
 const COMM_SERVICE_UUID = '00001234-0000-1000-8000-00805f9b34fb';
-
-// Command Characteristic 
 const CMD_CHAR_UUID = '00006789-0000-1000-8000-00805f9b34fb';
-
-// Data Characteristic 1
 const DATA_CHAR_1_UUID = '00002345-0000-1000-8000-00805f9b34fb';
-
-// Data Characteristic 2
 const DATA_CHAR_2_UUID = '0000abcd-0000-1000-8000-00805f9b34fb';
 
 // The goal of this component is to house the majority of state vars that way they can be distributed as we need
@@ -45,7 +44,7 @@ const reducer = (
     }
 };
 
-export default function AppContainer() {
+const TestingScreen = () => {
     // Scanned devices to be modified by reducer
     const [scannedDevices, dispatch] = useReducer(reducer, [])
 
@@ -53,6 +52,7 @@ export default function AppContainer() {
     const [connected, setConnected] = useState(false)
     const [connectedDevice, setConnectedDevice] = useState()
     const [connectedDeviceObj, setConnectedDeviceObj] = useState<Device>()
+    const [desiredDevice, setDesiredDevice] = useState<Device>()
     const [connectedDeviceName, setConnectedDeviceName] = useState('')
 
     // SV's connected Device Services and Characteristics
@@ -64,6 +64,7 @@ export default function AppContainer() {
 
     // Progress SV's
     const [isLoading, setIsLoading] = useState(false)
+    const [displayConnectionPopUp, setDisplayConnectionPopUp] = useState(true)
 
     const scanDevices = () => {
         setIsLoading(true)
@@ -89,15 +90,6 @@ export default function AppContainer() {
         dispatch({ type: 'CLEAR' })
     }
 
-    const disconnectDevice = () => {
-        ble.cancelDeviceConnection(connectedDevice)
-
-        setConnected(false)
-        setConnectedDevice('')
-        setServices([])
-
-    }
-
     const printServices = () => {
         console.log('Services')
         console.log(services)
@@ -119,23 +111,10 @@ export default function AppContainer() {
         }
     }
 
-    // console.log('Characteristics')
-    // console.log(characteristics)
+    const connectDevice = async () => {
+        console.log(`Connectiong device with Name, ID: ${desiredDevice.name}, ${desiredDevice.id}`)
 
-
-
-
-
-    const testBleState = async () => {
-        console.log('BLE state: ', await ble.state())
-        console.log('Connected? ', await ble.isDeviceConnected(connectedDevice))
-    }
-
-
-    const connectDevice = async (device) => {
-        console.log(`Connectiong device with Name, ID: ${device.name}, ${device.id}`)
-
-        ble.connectToDevice(device.id).then(async device => {
+        ble.connectToDevice(desiredDevice.id).then(async device => {
             setConnected(true)
             setConnectedDevice(device.id)
             setConnectedDeviceObj(device)
@@ -173,6 +152,15 @@ export default function AppContainer() {
         })
     }
 
+    const disconnectDevice = () => {
+        ble.cancelDeviceConnection(connectedDevice)
+
+        setConnected(false)
+        setConnectedDevice('')
+        setServices([])
+
+    }
+
     // function to send a number 0 - 8 to the SMURF in order to execute the corresponding characteristic
     const sendOperationCode = async (operationCode: string) => {
         console.log(`Sending operation Code: ${operationCode}`)
@@ -181,45 +169,7 @@ export default function AppContainer() {
             CMD_CHAR_UUID,
             base64.encode(operationCode)
         )
-        // if the operation is a test that yields data, then retrieve the data after the correct amount of time
-        // if (operationCode == "1") {
-        //     setTimeout(() => {
-        //         readData(1)
-        //     }, 8000)
-        // } else if (operationCode == "2") {
-        //     setTimeout(() => {
-        //         readData(2)
-        //     }, 16000)
-        // }
     }
-
-    // function to read the returned data from the SMURF 
-    const readData = async (testType) => {
-
-        console.log(`Retrieving data from Operation:  ${testType}`)
-        let data = undefined
-        let data_1 = undefined
-
-        if (testType == "8") {
-            console.log('Reached')
-            await connectedDeviceObj.readCharacteristicForService(COMM_SERVICE_UUID, DATA_CHAR_1_UUID).then(async () => {
-
-            })
-            console.log('Printing data for small flex test')
-            console.log(data)
-        } else if (testType == "9") {
-            data = await connectedDeviceObj.readCharacteristicForService(COMM_SERVICE_UUID, DATA_CHAR_1_UUID)
-
-
-            data_1 = connectedDeviceObj.readCharacteristicForService(COMM_SERVICE_UUID, DATA_CHAR_2_UUID)
-
-            console.log('Printing data for small large test')
-            console.log(data)
-            console.log(data_1)
-        }
-        console.log(data)
-    }
-
 
     const readSmallData = async () => {
         const data = await connectedDeviceObj.readCharacteristicForService(
@@ -230,13 +180,24 @@ export default function AppContainer() {
     }
 
     const readLargeData = async () => {
-        const data = base64.decode(await connectedDeviceObj.readCharacteristicForService(
-            COMM_SERVICE_UUID, DATA_CHAR_1_UUID)) +
-            base64.decode(await connectedDeviceObj.readCharacteristicForService(
-                COMM_SERVICE_UUID,
-                DATA_CHAR_2_UUID))
+        const data_1 = await connectedDeviceObj.readCharacteristicForService(
+            COMM_SERVICE_UUID, DATA_CHAR_1_UUID)
+        const data_2 = await connectedDeviceObj.readCharacteristicForService(
+            COMM_SERVICE_UUID, DATA_CHAR_2_UUID)
 
-        console.log(data)
+        console.log(base64.decode(data_1.value) + base64.decode(data_2.value))
+    }
+
+    const handleSelectDesiredDevice = (device: Device) => {
+        setDesiredDevice(device)
+    }
+
+    const hideConnectionPopUp = () => {
+        setDisplayConnectionPopUp(false)
+    }
+
+    const showConnectionPopUp = () => {
+        setDisplayConnectionPopUp(true)
     }
 
     useEffect(() => {
@@ -247,32 +208,50 @@ export default function AppContainer() {
 
     return (
         <View style={styles.pageContainer}>
-            <ConnectionContainer
-                scanForDevices={scanDevices}
-                scannedDevices={scannedDevices}
-                connectToDevice={connectDevice}
-                clearDevices={clearScannedDevices}
-                isLoading={isLoading}
-                connected={connected}
-                disconnectDevice={disconnectDevice} />
-            <DeviceControls
-                connected={connected}
-                disconnect={disconnectDevice}
-                connectedDeviceName={connectedDeviceName}
-                printServices={printServices}
-                printState={testBleState}
-                sendCommand={sendOperationCode}
-                readData={readSmallData}
-                readLargeData={readLargeData} />
+            <Modal
+                transparent={true}
+                visible={displayConnectionPopUp}
+                animationType='slide'>
+                <View style={styles.popUpStyle}>
+                    <ConnectionPopUp
+                        scannedDevices={scannedDevices}
+                        scanDevices={scanDevices}
+                        selectDevice={handleSelectDesiredDevice}
+                        desiredDevice={desiredDevice}
+                        clearScannedDevices={clearScannedDevices}
+                        handleConnect={connectDevice}
+                        handleDisconnect={disconnectDevice}
+                        handleHideConnectionPopUp={hideConnectionPopUp}
+                        printServices={printServices} />
+                </View>
+
+            </Modal>
+            <DataContainer
+                isConnected={connected}
+                handleDisplayConnectionPopUp={showConnectionPopUp}
+                deviceName={connectedDeviceName} />
+            <ControlsContainer
+                isConnected={connected}
+                sendOperationCode={sendOperationCode}
+                handleRequestSmallData={readSmallData}
+                handleRequestLargeData={readLargeData} />
+            <OutputContainer />
         </View>
     )
 }
 
+export default TestingScreen
+
 const styles = StyleSheet.create({
     pageContainer: {
-        flexDirection: 'row',
-        flex: 2,
+        flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        backgroundColor: '#2E2F2F'
+    },
+    popUpStyle: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 })
