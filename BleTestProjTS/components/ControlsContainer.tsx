@@ -58,7 +58,7 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
 
 const styles = StyleSheet.create({
     pageContainer: {
-        flex: 1,
+        flex: 2,
         justifyContent: 'flex-start',
         alignItems: 'center'
         // alignItems: 'center'

@@ -129,7 +129,7 @@ export default function DeviceControls({ connected, disconnect, connectedDeviceN
 
 const styles = StyleSheet.create({
     deviceControlsContainer: {
-        flex: 1,
+        flex: 3,
         alignItems: 'center',
         justifyContent: 'center'
     },

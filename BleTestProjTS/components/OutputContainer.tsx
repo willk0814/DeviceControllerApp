@@ -59,7 +59,7 @@ export default function OutputContainer() {
 
 const styles = StyleSheet.create({
     pageContainer: {
-        flex: 4,
+        flex: 8,
         alignItems: 'center'
     },
     titleStyle: {
