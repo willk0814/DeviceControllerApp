@@ -4,10 +4,7 @@ import { BleManager, Device, Service, Characteristic, Descriptor } from 'react-n
 import base64 from 'react-native-base64'
 
 // Page imports
-import DeviceControls from '../components/DeviceControls'
-import ConnectionContainer from '../components/ConnectionContainer'
 import ConnectionPopUp from '../components/ConnectionPopUp'
-
 import DataContainer from '../components/DataContainer'
 import ControlsContainer from '../components/ControlsContainer'
 import OutputContainer from '../components/OutputContainer'
@@ -65,6 +62,12 @@ const TestingScreen = () => {
     // Progress SV's
     const [isLoading, setIsLoading] = useState(false)
     const [displayConnectionPopUp, setDisplayConnectionPopUp] = useState(true)
+
+    // current Test SV's
+    const [currentTest, setCurrentTest] = useState({
+        type: 'small',
+        data: [0.0, 0.0, 0.0, 0.0]
+    })
 
     const scanDevices = () => {
         setIsLoading(true)
@@ -171,12 +174,18 @@ const TestingScreen = () => {
         )
     }
 
+    // ##### IMPORTANT ##### - tests currently aren't working
+    // The below to functions have a test written in that creates random input rather than pulling from the connected Device, toggle the comments to change the input source
     const readSmallData = async () => {
         const data = await connectedDeviceObj.readCharacteristicForService(
             COMM_SERVICE_UUID,
             DATA_CHAR_1_UUID)
 
-        console.log(base64.decode(data.value))
+        let final_data = base64.decode(data.value).split(",")
+
+        // const final_data = generateRandomTest('small')
+
+        parseData(final_data, 'small')
     }
 
     const readLargeData = async () => {
@@ -185,8 +194,40 @@ const TestingScreen = () => {
         const data_2 = await connectedDeviceObj.readCharacteristicForService(
             COMM_SERVICE_UUID, DATA_CHAR_2_UUID)
 
-        console.log(base64.decode(data_1.value) + base64.decode(data_2.value))
+        let final_data = base64.decode(data_1.value) + base64.decode(data_2.value)
+
+        // const final_data = generateRandomTest('large')
+
+        parseData(final_data.split(","), 'large')
     }
+
+    const generateRandomTest = (type: String) => {
+        let tmp_arr = []
+        if (type == 'small') {
+            for (let i = 0; i < 4; i++) {
+                tmp_arr.push(randomNumberHelper().toString())
+            }
+        } else if (type == 'large') {
+            for (let i = 0; i < 8; i++) {
+                tmp_arr.push(randomNumberHelper().toString())
+            }
+        }
+        tmp_arr.push("")
+        return tmp_arr
+    }
+
+    const randomNumberHelper = () => {
+        return Math.floor(Math.random() * (1000 - 100) + 100) / 100
+    }
+
+    const parseData = (arr, type: string) => {
+        // arr.pop()
+        let final_arr = arr.map(Number)
+        console.log(final_arr)
+        setCurrentTest({ type: type, data: final_arr })
+    }
+
+
 
     const handleSelectDesiredDevice = (device: Device) => {
         setDesiredDevice(device)
@@ -222,7 +263,8 @@ const TestingScreen = () => {
                         handleConnect={connectDevice}
                         handleDisconnect={disconnectDevice}
                         handleHideConnectionPopUp={hideConnectionPopUp}
-                        printServices={printServices} />
+                        isConnected={connected}
+                        connectedDevice={connectedDeviceName} />
                 </View>
 
             </Modal>
@@ -235,7 +277,9 @@ const TestingScreen = () => {
                 sendOperationCode={sendOperationCode}
                 handleRequestSmallData={readSmallData}
                 handleRequestLargeData={readLargeData} />
-            <OutputContainer />
+            <OutputContainer
+                isConnected={connected}
+                currentTest={currentTest} />
         </View>
     )
 }

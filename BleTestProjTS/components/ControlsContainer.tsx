@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
     pageContainer: {
         flex: 2,
         justifyContent: 'flex-start',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginBottom: 50
         // alignItems: 'center'
     },
     titleStyle: {

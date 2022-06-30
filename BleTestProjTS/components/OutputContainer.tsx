@@ -4,14 +4,22 @@ import { LineChart } from 'react-native-chart-kit'
 
 const screenWidth = Dimensions.get('window').width * .90
 
-export default function OutputContainer() {
-    let xLabels = ["2.0", "2.5", "3.0", "3.5", "4.0", "4.5", "5.0", "5.5", "6.0"]
+export default function OutputContainer({ isConnected, currentTest }) {
+    let xLargeLabels = ["2.0", "2.5", "3.0", "3.5", "4.0", "4.5", "5.0", "5.5", "6.0"]
+    let xSmallLables = ["2.0", "2.5", "3.0", "3.5", "4.0"]
+    let xLabels = []
+
+    if (currentTest.type == 'small') {
+        xLabels = xSmallLables
+    } else if (currentTest.type == 'large') {
+        xLabels = xLargeLabels
+    }
 
     const data = {
         labels: xLabels,
         datasets: [
             {
-                data: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+                data: currentTest.data,
                 color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // optional
                 strokeWidth: 2 // optional
             }
@@ -32,35 +40,46 @@ export default function OutputContainer() {
 
     return (
         <View style={styles.pageContainer}>
-            <View style={{ flex: 4 }}>
-                <LineChart
-                    data={data}
-                    width={screenWidth}
-                    height={400}
-                    chartConfig={chartConfig}
-                    bezier={true} />
-            </View>
-            <View style={{ flex: 1 }}>
-                <View style={styles.rowStyle}>
-                    <TouchableOpacity
-                        style={styles.buttonStyle}>
-                        <Text style={styles.buttonText}>Accept Result</Text>
-                    </TouchableOpacity>
+            {
+                isConnected ? (
+                    <View>
+                        <View style={{ flex: 4 }}>
+                            <LineChart
+                                data={data}
+                                width={screenWidth}
+                                height={650}
+                                chartConfig={chartConfig}
+                                bezier={true} />
+                        </View>
+                        <View style={{ flex: 1 }}>
+                            <View style={styles.rowStyle}>
+                                <TouchableOpacity
+                                    style={styles.buttonStyle}>
+                                    <Text style={styles.buttonText}>Accept Result</Text>
+                                </TouchableOpacity>
 
-                    <TouchableOpacity
-                        style={[styles.buttonStyle, styles.rejectButton]}>
-                        <Text style={styles.buttonText}>Reject Result</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
+                                <TouchableOpacity
+                                    style={[styles.buttonStyle, styles.rejectButton]}>
+                                    <Text style={styles.buttonText}>Reject Result</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                ) : (
+
+                        <Text style={styles.titleStyle}>Connect a device to View Data</Text>
+                    )
+            }
         </View>
+
     )
 }
 
 const styles = StyleSheet.create({
     pageContainer: {
         flex: 8,
-        alignItems: 'center'
+        alignItems: 'center',
+        justify: 'content'
     },
     titleStyle: {
         alignSelf: 'center',
