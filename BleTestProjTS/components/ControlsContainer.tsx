@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 
-export default function ControlsContainer({ isConnected, sendOperationCode, handleRequestSmallData, handleRequestLargeData }) {
+export default function ControlsContainer({ isConnected, sendOperationCode, handleRequestSmallData, handleRequestLargeData, readyToTest }) {
     return (
         <View style={styles.pageContainer}>
             {
@@ -24,25 +24,29 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                         <View style={[{ flexDirection: 'row' }, { justifyContent: 'center' }]}>
                             <TouchableOpacity
                                 style={[styles.buttonStyle]}
-                                onPress={() => sendOperationCode("8")}>
+                                onPress={() => sendOperationCode("8")}
+                                disabled={!readyToTest}>
                                 <Text style={styles.buttonText}>Small Flex Test</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity
                                 style={[styles.buttonStyle]}
-                                onPress={handleRequestSmallData}>
+                                onPress={handleRequestSmallData}
+                                disabled={!readyToTest}>
                                 <Text style={styles.buttonText}>Retrieve Small Data</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity
                                 style={[styles.buttonStyle]}
-                                onPress={() => sendOperationCode("9")}>
+                                onPress={() => sendOperationCode("9")}
+                                disabled={!readyToTest}>
                                 <Text style={styles.buttonText}>Large Flex Test</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity
                                 style={[styles.buttonStyle]}
-                                onPress={handleRequestLargeData}>
+                                onPress={handleRequestLargeData}
+                                disabled={!readyToTest}>
                                 <Text style={styles.buttonText}>Retrieve Large Data</Text>
                             </TouchableOpacity>
 

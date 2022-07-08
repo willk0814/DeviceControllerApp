@@ -2,12 +2,14 @@ import React, { useEffect, useState, useReducer } from 'react'
 import { View, Text, StyleSheet, Modal } from 'react-native'
 import { BleManager, Device, Service, Characteristic, Descriptor } from 'react-native-ble-plx'
 import base64 from 'react-native-base64'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Page imports
 import ConnectionPopUp from '../components/ConnectionPopUp'
 import DataContainer from '../components/DataContainer'
 import ControlsContainer from '../components/ControlsContainer'
 import OutputContainer from '../components/OutputContainer'
+import generate from '@babel/generator'
 
 const ble = new BleManager();
 
@@ -41,7 +43,7 @@ const reducer = (
     }
 };
 
-const TestingScreen = () => {
+const TestingScreen = ({ researcherID }) => {
     // Scanned devices to be modified by reducer
     const [scannedDevices, dispatch] = useReducer(reducer, [])
 
@@ -56,18 +58,23 @@ const TestingScreen = () => {
     const [services, setServices] = useState<Service[]>([])
     const [descriptors, setDescriptors] = useState<Descriptor[]>([])
     const [characteristics, setCharacteristics] = useState<Characteristic[]>([])
-
     const [servicesMap, setServicesMap] = useState({})
 
     // Progress SV's
     const [isLoading, setIsLoading] = useState(false)
     const [displayConnectionPopUp, setDisplayConnectionPopUp] = useState(true)
+    const [readyToAccept, setReadyToAccept] = useState(false)
 
     // current Test SV's
-    const [currentTest, setCurrentTest] = useState({
-        type: 'small',
-        data: [0.0, 0.0, 0.0, 0.0]
+    const [currentTestData, setCurrentTestData] = useState({
+        size: 'small',
+        data: [0.0, 0.0, 0.0, 0.0],
     })
+    const [currentTestType, setCurrentTestType] = useState('')
+    const [currentTestPlant, setCurrentTestPlant] = useState('')
+
+    // SV's for Run logic
+    const [readyToRun, setReadyToRun] = useState(false)
 
     const scanDevices = () => {
         setIsLoading(true)
@@ -91,27 +98,6 @@ const TestingScreen = () => {
 
     const clearScannedDevices = () => {
         dispatch({ type: 'CLEAR' })
-    }
-
-    const printServices = () => {
-        console.log('Services')
-        console.log(services)
-
-        console.log('Services Map')
-        for (let ser of services) {
-            let tmpUUID = ser.uuid
-            // if (serviceMap[tmpUUID].characteristicsCount == 1) {
-            console.log(`Service UUID: ${servicesMap[tmpUUID].uuid}`)
-            console.log(`Is Primary? ${servicesMap[tmpUUID].isPrimary}`)
-            console.log(`Characteristic Count: ${servicesMap[tmpUUID].characteristicsCount}`)
-            console.log('--- Characteristic Map ---')
-            // console.log(serviceMap[tmpUUID].characteristics)
-
-            let characteristics = servicesMap[tmpUUID].characteristics
-            for (let char in characteristics) {
-                console.log(char, ': ', characteristics[char])
-            }
-        }
     }
 
     const connectDevice = async () => {
@@ -177,57 +163,96 @@ const TestingScreen = () => {
     // ##### IMPORTANT ##### - tests currently aren't working
     // The below to functions have a test written in that creates random input rather than pulling from the connected Device, toggle the comments to change the input source
     const readSmallData = async () => {
+        // ### COMMENT THIS IN TO READ FROM DEVICE ###
         const data = await connectedDeviceObj.readCharacteristicForService(
             COMM_SERVICE_UUID,
             DATA_CHAR_1_UUID)
 
         let final_data = base64.decode(data.value).split(",")
+        // #######
 
-        // const final_data = generateRandomTest('small')
-
+        // ### COMMENT THIS OUT ###
+        // const final_data = generateTestString('small')
+        // ######
         parseData(final_data, 'small')
+        setReadyToAccept(true)
+        setReadyToRun(false)
     }
 
     const readLargeData = async () => {
+        // ### COMMENT THIS IN TO READ FROM DEVICE ###
         const data_1 = await connectedDeviceObj.readCharacteristicForService(
             COMM_SERVICE_UUID, DATA_CHAR_1_UUID)
         const data_2 = await connectedDeviceObj.readCharacteristicForService(
             COMM_SERVICE_UUID, DATA_CHAR_2_UUID)
 
         let final_data = base64.decode(data_1.value) + base64.decode(data_2.value)
+        // #######
 
-        // const final_data = generateRandomTest('large')
-
+        // ### COMMENT THIS OUT ###
+        // const final_data = generateTestString('large')
+        // ######
         parseData(final_data.split(","), 'large')
-    }
-
-    const generateRandomTest = (type: String) => {
-        let tmp_arr = []
-        if (type == 'small') {
-            for (let i = 0; i < 4; i++) {
-                tmp_arr.push(randomNumberHelper().toString())
-            }
-        } else if (type == 'large') {
-            for (let i = 0; i < 8; i++) {
-                tmp_arr.push(randomNumberHelper().toString())
-            }
-        }
-        tmp_arr.push("")
-        return tmp_arr
-    }
-
-    const randomNumberHelper = () => {
-        return Math.floor(Math.random() * (1000 - 100) + 100) / 100
+        setReadyToAccept(true)
+        setReadyToRun(false)
     }
 
     const parseData = (arr, type: string) => {
         // arr.pop()
         let final_arr = arr.map(Number)
         console.log(final_arr)
-        setCurrentTest({ type: type, data: final_arr })
+        setCurrentTestData({ size: type, data: final_arr })
     }
 
+    const generateTestString = (size) => {
+        let tmpString = ''
+        let randomVal = Math.floor(Math.random() * 3 + 1)
 
+        if (size == 'large') {
+            if (randomVal == 1) {
+                tmpString = "2.25, 3.27, 5.16, 4.82, 7.12, 6.35, 9.15, 1.36"
+            } else if (randomVal == 2) {
+                tmpString = "4.25, 5.27, 7.16, 3.82, 1.12, 9.35, 0.15, 2.36"
+            } else {
+                tmpString = "1.25, 9.27, 1.16, 2.82, 6.12, 1.35, 12.15, 0.36"
+            }
+        } else if (size == 'small') {
+            if (randomVal == 1) {
+                tmpString = "2.25, 3.27, 5.16, 4.82"
+            } else if (randomVal == 2) {
+                tmpString = "4.25, 5.27, 7.16, 3.82"
+            } else {
+                tmpString = "1.25, 9.27, 1.16, 2.82"
+            }
+        }
+        return tmpString
+    }
+
+    // To be called on run, generate key for test that stores all meta data
+    const generateKey = () => {
+        let tmpKey = ''
+        let date = generateTime()
+        let plant = currentTestPlant
+        let typeChar = currentTestType
+        let device = connectedDeviceName
+        let researcher = researcherID
+        tmpKey = `${plant}  ${date}  ${device}  ${researcher}  ${typeChar}`
+        return tmpKey
+
+    }
+
+    const generateTime = () => {
+        // create the date value
+        let date = new Date();
+        let day = String(date.getDate()).padStart(2, '0');;
+        let month = String(date.getMonth() + 1).padStart(2, '0');;
+        let year = date.getFullYear();;
+        let hours = String(date.getHours()).padStart(2, '0');;
+        let min = String(date.getMinutes()).padStart(2, '0');;
+        let sec = String(date.getSeconds()).padStart(2, '0');;
+        let dateVal = `${month}/${day}/${year} ${hours}:${min}:${sec}`;
+        return dateVal
+    }
 
     const handleSelectDesiredDevice = (device: Device) => {
         setDesiredDevice(device)
@@ -239,6 +264,63 @@ const TestingScreen = () => {
 
     const showConnectionPopUp = () => {
         setDisplayConnectionPopUp(true)
+    }
+
+    const setTestType = (value) => {
+        setCurrentTestType(value)
+        if (currentTestPlant != '') {
+            setReadyToRun(true)
+        }
+    }
+
+    const setPlantID = (value) => {
+        setCurrentTestPlant(value)
+        if (currentTestType != '') {
+            setReadyToRun(true)
+        }
+    }
+
+    const resetInputs = () => {
+        setCurrentTestPlant('')
+        setCurrentTestType('')
+        setReadyToRun(false)
+        setCurrentTestData({ size: 'small', data: [0, 0, 0, 0] })
+        setReadyToAccept(false)
+    }
+
+    const handleAccept = async () => {
+        let key = generateKey()
+        let currentSessions = null
+        try {
+            currentSessions = JSON.parse(await AsyncStorage.getItem('sessions'))
+        } catch (err) {
+            console.log(err)
+        }
+
+        if (currentSessions == null) {
+            currentSessions = key
+        } else {
+            currentSessions += '$$$' + key
+        }
+
+        let tmpSessions = JSON.stringify(currentSessions)
+        storeData('sessions', tmpSessions)
+        storeData(key, JSON.stringify(currentTestData))
+
+        resetInputs()
+    }
+
+    const storeData = async (storageKey, value) => {
+        try {
+            await AsyncStorage.setItem(storageKey, value)
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+
+    const handleReject = () => {
+        resetInputs()
     }
 
     useEffect(() => {
@@ -271,15 +353,23 @@ const TestingScreen = () => {
             <DataContainer
                 isConnected={connected}
                 handleDisplayConnectionPopUp={showConnectionPopUp}
-                deviceName={connectedDeviceName} />
+                deviceName={connectedDeviceName}
+                handleTestType={setTestType}
+                handlePlantID={setPlantID}
+                plantID={currentTestPlant}
+                currentTestType={currentTestType} />
             <ControlsContainer
                 isConnected={connected}
                 sendOperationCode={sendOperationCode}
                 handleRequestSmallData={readSmallData}
-                handleRequestLargeData={readLargeData} />
+                handleRequestLargeData={readLargeData}
+                readyToTest={readyToRun} />
             <OutputContainer
                 isConnected={connected}
-                currentTest={currentTest} />
+                currentTest={currentTestData}
+                handleAccept={handleAccept}
+                handleReject={handleReject}
+                readyToAccept={readyToAccept} />
         </View>
     )
 }

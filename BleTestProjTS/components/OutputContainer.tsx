@@ -4,14 +4,14 @@ import { LineChart } from 'react-native-chart-kit'
 
 const screenWidth = Dimensions.get('window').width * .90
 
-export default function OutputContainer({ isConnected, currentTest }) {
+export default function OutputContainer({ isConnected, currentTest, handleAccept, handleReject, readyToAccept }) {
     let xLargeLabels = ["2.0", "2.5", "3.0", "3.5", "4.0", "4.5", "5.0", "5.5", "6.0"]
     let xSmallLables = ["2.0", "2.5", "3.0", "3.5", "4.0"]
     let xLabels = []
 
-    if (currentTest.type == 'small') {
+    if (currentTest.size == 'small') {
         xLabels = xSmallLables
-    } else if (currentTest.type == 'large') {
+    } else if (currentTest.size == 'large') {
         xLabels = xLargeLabels
     }
 
@@ -54,12 +54,16 @@ export default function OutputContainer({ isConnected, currentTest }) {
                         <View style={{ flex: 1 }}>
                             <View style={styles.rowStyle}>
                                 <TouchableOpacity
-                                    style={styles.buttonStyle}>
+                                    onPress={handleAccept}
+                                    style={styles.buttonStyle}
+                                    disabled={!readyToAccept}>
                                     <Text style={styles.buttonText}>Accept Result</Text>
                                 </TouchableOpacity>
 
                                 <TouchableOpacity
-                                    style={[styles.buttonStyle, styles.rejectButton]}>
+                                    onPress={handleReject}
+                                    style={[styles.buttonStyle, styles.rejectButton]}
+                                    disabled={!readyToAccept}>
                                     <Text style={styles.buttonText}>Reject Result</Text>
                                 </TouchableOpacity>
                             </View>

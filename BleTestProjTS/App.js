@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 
@@ -10,11 +10,26 @@ const Stack = createNativeStackNavigator();
 
 
 const App = () => {
+  const [researcherID, setResearcherID] = useState('')
+  const [emptyResearcher, setEmptyResearcher] = useState(true)
+
+  const setResearcher = (value) => {
+    setResearcherID(value)
+    setEmptyResearcher(false)
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Testing" component={TestingScreen} />
+        <Stack.Screen name="Home">
+          {props => <HomeScreen {...props}
+            setResearcher={setResearcher}
+            emptyResearcher={emptyResearcher} />}
+        </Stack.Screen>
+        <Stack.Screen name="Testing">
+          {props => <TestingScreen {...props}
+            researcherID={researcherID} />}
+        </Stack.Screen>
         <Stack.Screen name="Logs" component={LogsScreen} />
       </Stack.Navigator>
     </NavigationContainer>

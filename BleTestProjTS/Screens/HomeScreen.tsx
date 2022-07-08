@@ -1,7 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
 
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({ navigation, setResearcher, emptyResearcher }) {
+
+    const [tmpResearcherID, setTmpResearcherID] = useState('')
+
+
+
     return (
         <View style={styles.pageContainer}>
             <Text style={styles.titleText}>Welcome to the Device Controller Application</Text>
@@ -10,12 +15,12 @@ export default function HomeScreen({ navigation }) {
                 style={styles.inputStyle}
                 placeholder='Researcher ID'
                 placeholderTextColor='#2E2F2F'
-            />
+                onChangeText={value => setTmpResearcherID(value)} />
 
 
             <TouchableOpacity
                 style={styles.buttonStyle}
-                onPress={() => console.log('Save Pressed')}>
+                onPress={() => setResearcher(tmpResearcherID)}>
                 <Text style={styles.buttonText}>Save ResearcherID</Text>
             </TouchableOpacity>
 
@@ -23,7 +28,8 @@ export default function HomeScreen({ navigation }) {
 
             <TouchableOpacity
                 style={styles.buttonStyle}
-                onPress={() => navigation.navigate("Testing")}>
+                onPress={() => navigation.navigate("Testing")}
+                disabled={emptyResearcher}>
                 <Text style={styles.buttonText}>Go to Testing Screen</Text>
             </TouchableOpacity>
 
