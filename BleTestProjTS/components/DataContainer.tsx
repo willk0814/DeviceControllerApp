@@ -14,6 +14,7 @@ export default function DataContainer({ isConnected, handleDisplayConnectionPopU
         { label: 'D', value: 'D' },
         { label: 'E', value: 'E' },
         { label: 'F', value: 'F' },
+        { label: 'PUSHER', value: 'Pusher' }
     ])
 
 

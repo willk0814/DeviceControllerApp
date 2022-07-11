@@ -1,7 +1,7 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 
-export default function ControlsContainer({ isConnected, sendOperationCode, handleRequestSmallData, handleRequestLargeData, readyToTest, smurfSelected }) {
+export default function ControlsContainer({ isConnected, sendOperationCode, handleRequestSmallData, handleRequestLargeData, readyToTest, smurfSelected, retrievePusherData }) {
     return (
         <View style={styles.pageContainer}>
 
@@ -54,7 +54,12 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                         </View>
                     </View>
                 ) : (
-                        <Text style={styles.titleStyle}>Plant Pusher Controls</Text>
+                        <TouchableOpacity
+                            style={!readyToTest ? [styles.buttonStyle, styles.disabledButton, { width: 300 }] : [styles.buttonStyle, { width: 300 }]}
+                            onPress={retrievePusherData}
+                            disabled={!readyToTest}>
+                            <Text style={styles.buttonText}>Retrieve Pusher Data</Text>
+                        </TouchableOpacity>
                     )
             }
         </View>

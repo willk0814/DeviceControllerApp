@@ -12,12 +12,22 @@ import OutputContainer from '../components/OutputContainer'
 
 const ble = new BleManager();
 
-// Declared UUIDS for services and Characteristics:
-// Communication Service UUID
-const COMM_SERVICE_UUID = '00001234-0000-1000-8000-00805f9b34fb';
+// BLE UUIDs
+// --- SMURF ---
+const SMURF_COMM_SERVICE_UUID = '00001234-0000-1000-8000-00805f9b34fb';
 const CMD_CHAR_UUID = '00006789-0000-1000-8000-00805f9b34fb';
-const DATA_CHAR_1_UUID = '00002345-0000-1000-8000-00805f9b34fb';
-const DATA_CHAR_2_UUID = '0000abcd-0000-1000-8000-00805f9b34fb';
+const SMURF_DATA_CHAR_1_UUID = '00002345-0000-1000-8000-00805f9b34fb';
+const SMURF_DATA_CHAR_2_UUID = '0000abcd-0000-1000-8000-00805f9b34fb';
+
+// --- PUSHER ---
+const PUSHER_COMM_SERVICE_UUID = '00001234-0000-1000-8000-00805f9b34fb';
+const PUSHER_DATA_CHAR_1_UUID = '00002345-0000-1000-8000-00805f9b34fb';
+const PUSHER_DATA_CHAR_2_UUID = '0000abcd-0000-1000-8000-00805f9b34fb';
+const PUSHER_DATA_CHAR_3_UUID = '00002345-0000-1000-8000-00805f9b34fb';
+const PUSHER_DATA_CHAR_4_UUID = '0000abcd-0000-1000-8000-00805f9b34fb';
+const PUSHER_DATA_CHAR_5_UUID = '0000abcd-0000-1000-8000-00805f9b34fb';
+
+
 
 // The goal of this component is to house the majority of state vars that way they can be distributed as we need
 
@@ -154,7 +164,7 @@ const TestingScreen = ({ researcherID }) => {
     const sendOperationCode = async (operationCode: string) => {
         console.log(`Sending operation Code: ${operationCode}`)
         await connectedDeviceObj.writeCharacteristicWithResponseForService(
-            COMM_SERVICE_UUID,
+            SMURF_COMM_SERVICE_UUID,
             CMD_CHAR_UUID,
             base64.encode(operationCode)
         )
@@ -165,8 +175,8 @@ const TestingScreen = ({ researcherID }) => {
     const readSmallData = async () => {
         // ### COMMENT THIS IN TO READ FROM DEVICE ###
         const data = await connectedDeviceObj.readCharacteristicForService(
-            COMM_SERVICE_UUID,
-            DATA_CHAR_1_UUID)
+            SMURF_COMM_SERVICE_UUID,
+            SMURF_DATA_CHAR_1_UUID)
 
         let final_data = base64.decode(data.value).split(",")
         // #######
@@ -182,12 +192,12 @@ const TestingScreen = ({ researcherID }) => {
     const readLargeData = async () => {
         // ### COMMENT THIS IN TO READ FROM DEVICE ###
         const data_1 = await connectedDeviceObj.readCharacteristicForService(
-            COMM_SERVICE_UUID, DATA_CHAR_1_UUID)
+            SMURF_COMM_SERVICE_UUID, SMURF_DATA_CHAR_1_UUID)
         const data_2 = await connectedDeviceObj.readCharacteristicForService(
-            COMM_SERVICE_UUID, DATA_CHAR_2_UUID)
+            SMURF_COMM_SERVICE_UUID, SMURF_DATA_CHAR_2_UUID)
 
         let final_data = base64.decode(data_1.value) + base64.decode(data_2.value)
-        // #######
+        // // #######
 
         // ### COMMENT THIS OUT ###
         // const final_data = generateTestString('large')
@@ -226,6 +236,26 @@ const TestingScreen = ({ researcherID }) => {
             }
         }
         return tmpString
+    }
+
+    const retrievePusherData = async () => {
+        // read data from all 5 characteristics
+        const data_1 = await connectedDeviceObj.readCharacteristicForService(
+            PUSHER_COMM_SERVICE_UUID, PUSHER_DATA_CHAR_1_UUID)
+        const data_2 = await connectedDeviceObj.readCharacteristicForService(
+            PUSHER_COMM_SERVICE_UUID, PUSHER_DATA_CHAR_2_UUID)
+        const data_3 = await connectedDeviceObj.readCharacteristicForService(
+            PUSHER_COMM_SERVICE_UUID, PUSHER_DATA_CHAR_3_UUID)
+        const data_4 = await connectedDeviceObj.readCharacteristicForService(
+            PUSHER_COMM_SERVICE_UUID, PUSHER_DATA_CHAR_4_UUID)
+        const data_5 = await connectedDeviceObj.readCharacteristicForService(
+            PUSHER_COMM_SERVICE_UUID, PUSHER_DATA_CHAR_5_UUID)
+
+
+        let final_data = base64.decode(data_1.value) + base64.decode(data_2.value) + base64.decode(data_3.value) + base64.decode(data_4.value) + base64.decode(data_5.value)
+
+        console.log(final_data.split(','))
+
     }
 
     // To be called on run, generate key for test that stores all meta data
@@ -330,6 +360,7 @@ const TestingScreen = ({ researcherID }) => {
 
     const handlePusherSelect = () => {
         setSmurfSelected(false)
+        setCurrentTestType('PUSHER')
     }
 
     useEffect(() => {
@@ -376,7 +407,8 @@ const TestingScreen = ({ researcherID }) => {
                 handleRequestSmallData={readSmallData}
                 handleRequestLargeData={readLargeData}
                 readyToTest={readyToRun}
-                smurfSelected={smurfSelected} />
+                smurfSelected={smurfSelected}
+                retrievePusherData={retrievePusherData} />
             <OutputContainer
                 isConnected={connected}
                 currentTest={currentTestData}
