@@ -55,14 +55,14 @@ export default function OutputContainer({ isConnected, currentTest, handleAccept
                             <View style={styles.rowStyle}>
                                 <TouchableOpacity
                                     onPress={handleAccept}
-                                    style={styles.buttonStyle}
+                                    style={!readyToAccept ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                                     disabled={!readyToAccept}>
                                     <Text style={styles.buttonText}>Accept Result</Text>
                                 </TouchableOpacity>
 
                                 <TouchableOpacity
                                     onPress={handleReject}
-                                    style={[styles.buttonStyle, styles.rejectButton]}
+                                    style={!readyToAccept ? [styles.buttonStyle, styles.disabledButton] : [styles.buttonStyle, styles.rejectButton]}
                                     disabled={!readyToAccept}>
                                     <Text style={styles.buttonText}>Reject Result</Text>
                                 </TouchableOpacity>
@@ -70,8 +70,10 @@ export default function OutputContainer({ isConnected, currentTest, handleAccept
                         </View>
                     </View>
                 ) : (
+                        // <Text style={styles.titleStyle}>Connect a device to View Data</Text>
+                        <View>
 
-                        <Text style={styles.titleStyle}>Connect a device to View Data</Text>
+                        </View>
                     )
             }
         </View>
@@ -87,6 +89,7 @@ const styles = StyleSheet.create({
     },
     titleStyle: {
         alignSelf: 'center',
+        justifyContent: 'center',
         fontSize: 30,
         color: '#cddddd'
     },
@@ -107,5 +110,8 @@ const styles = StyleSheet.create({
         color: '#cddddd',
         fontSize: 25,
         paddingHorizontal: 12.5
+    },
+    disabledButton: {
+        backgroundColor: 'grey'
     }
 })

@@ -1,11 +1,12 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 
-export default function ControlsContainer({ isConnected, sendOperationCode, handleRequestSmallData, handleRequestLargeData, readyToTest }) {
+export default function ControlsContainer({ isConnected, sendOperationCode, handleRequestSmallData, handleRequestLargeData, readyToTest, smurfSelected }) {
     return (
         <View style={styles.pageContainer}>
+
             {
-                isConnected ? (
+                smurfSelected ? (
                     <View>
                         <View style={[{ flexDirection: 'row' }, { justifyContent: 'center' }]}>
                             <TouchableOpacity
@@ -23,28 +24,28 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                         </View>
                         <View style={[{ flexDirection: 'row' }, { justifyContent: 'center' }]}>
                             <TouchableOpacity
-                                style={[styles.buttonStyle]}
+                                style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                                 onPress={() => sendOperationCode("8")}
                                 disabled={!readyToTest}>
                                 <Text style={styles.buttonText}>Small Flex Test</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                style={[styles.buttonStyle]}
+                                style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                                 onPress={handleRequestSmallData}
                                 disabled={!readyToTest}>
                                 <Text style={styles.buttonText}>Retrieve Small Data</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                style={[styles.buttonStyle]}
+                                style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                                 onPress={() => sendOperationCode("9")}
                                 disabled={!readyToTest}>
                                 <Text style={styles.buttonText}>Large Flex Test</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                style={[styles.buttonStyle]}
+                                style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                                 onPress={handleRequestLargeData}
                                 disabled={!readyToTest}>
                                 <Text style={styles.buttonText}>Retrieve Large Data</Text>
@@ -53,7 +54,7 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                         </View>
                     </View>
                 ) : (
-                        <Text style={styles.titleStyle}>Device Controls</Text>
+                        <Text style={styles.titleStyle}>Plant Pusher Controls</Text>
                     )
             }
         </View>
@@ -88,5 +89,8 @@ const styles = StyleSheet.create({
     },
     largeButtonStyle: {
         width: 350
+    },
+    disabledButton: {
+        backgroundColor: 'grey'
     }
 })

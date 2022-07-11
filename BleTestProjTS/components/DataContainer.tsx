@@ -36,7 +36,7 @@ export default function DataContainer({ isConnected, handleDisplayConnectionPopU
                         {isConnected ? (
                             <TouchableOpacity
                                 onPress={handleDisplayConnectionPopUp}
-                                style={styles.buttonStyle}>
+                                style={[styles.buttonStyle, { backgroundColor: '#0362fc' }]}>
                                 <Text style={styles.dataLabels}>{deviceName}</Text>
                             </TouchableOpacity>
                         ) : (

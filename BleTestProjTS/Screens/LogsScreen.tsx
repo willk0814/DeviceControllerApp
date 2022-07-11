@@ -75,7 +75,7 @@ export default function LogsScreen() {
                 </ScrollView>
             ) : (
                     <View style={styles.listView}>
-                        <Text style={[{ color: '#cddddd' }, { fontSize: 20 }]}>Looks like you have no stored Logs, run some tests and save them here</Text>
+                        <Text style={[{ color: '#cddddd' }, { fontSize: 20 }]}>No logs available for viewing; if you have stored logs search for them above</Text>
                     </View>
                 )}
 

@@ -3,20 +3,40 @@ import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native
 import DeviceCard from '../components/DeviceCard'
 import { Device } from 'react-native-ble-plx'
 
-export default function ConnectionPopUp({ scannedDevices, scanDevices, selectDevice, desiredDevice, clearScannedDevices, handleConnect, handleDisconnect, handleHideConnectionPopUp, isConnected, connectedDevice }) {
+export default function ConnectionPopUp({ scannedDevices, scanDevices, selectDevice, desiredDevice, clearScannedDevices, handleConnect, handleDisconnect, handleHideConnectionPopUp, isConnected, connectedDevice, smurfSelected, selectSMURF, selectPUSHER }) {
     return (
         <View>
             <View style={styles.pageContainer}>
+                <View>
+                    <Text style={styles.buttonText}>I am connecting a:</Text>
+                    <View style={styles.rowStyle}>
+                        <TouchableOpacity
+                            // disabled={isConnected}
+                            style={smurfSelected ? styles.buttonStyle : [styles.buttonStyle, styles.disabledButton]}
+                            onPress={selectSMURF}>
+                            <Text style={styles.buttonText}>SMURF</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            // disabled={isConnected}
+                            style={!smurfSelected ? styles.buttonStyle : [styles.buttonStyle, styles.disabledButton]}
+                            onPress={selectPUSHER}>
+                            <Text style={styles.buttonText}>Plant Pusher</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <View style={styles.pageBreak}>
+
+                </View>
                 <View style={styles.rowStyle}>
                     <TouchableOpacity
-                        style={styles.buttonStyle}
+                        style={isConnected ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                         onPress={scanDevices}
                         disabled={isConnected}>
                         <Text style={styles.buttonText}>Scan for Devices</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        style={[styles.buttonStyle, styles.redButton]}
+                        style={isConnected ? [styles.buttonStyle, styles.disabledButton] : [styles.buttonStyle, styles.redButton]}
                         onPress={clearScannedDevices}
                         disabled={isConnected}>
                         <Text style={styles.buttonText}>Clear Scan</Text>
@@ -24,7 +44,7 @@ export default function ConnectionPopUp({ scannedDevices, scanDevices, selectDev
                 </View>
 
                 {isConnected ? (
-                    <Text style={styles.deviceText}>{connectedDevice}</Text>
+                    <Text style={styles.buttonText}>{connectedDevice}</Text>
                 ) : (
                         <FlatList
                             keyExtractor={(item) => item.id}
@@ -41,14 +61,14 @@ export default function ConnectionPopUp({ scannedDevices, scanDevices, selectDev
 
                 <View style={styles.rowStyle}>
                     <TouchableOpacity
-                        style={styles.buttonStyle}
+                        style={isConnected ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                         onPress={handleConnect}
                         disabled={isConnected}>
                         <Text style={styles.buttonText}>Connect</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                        style={[styles.buttonStyle, styles.redButton]}
+                        style={!isConnected ? [styles.buttonStyle, styles.disabledButton] : [styles.buttonStyle, styles.redButton]}
                         onPress={handleDisconnect}
                         disabled={!isConnected}>
                         <Text style={styles.buttonText}>Disconnect</Text>
@@ -101,5 +121,15 @@ const styles = StyleSheet.create({
     deviceText: {
         color: '#cddddd',
         fontSize: 20
+    },
+    disabledButton: {
+        backgroundColor: 'grey'
+    },
+    pageBreak: {
+        width: '98%',
+        marginVertical: 5,
+        backgroundColor: '#cddddd',
+        height: 10,
+        borderRadius: 10
     }
 })

@@ -79,6 +79,13 @@ export default function AvailableSession({ keyVal, testData, testSize }) {
                     <Text style={styles.sessionText}>{keyDescription}</Text>
                 </TouchableOpacity>
 
+                <TouchableOpacity
+                    style={styles.downloadButton}
+                    onPress={() => console.log('Download Pressed')}>
+                    <Text style={styles.sessionText}>Download</Text>
+
+                </TouchableOpacity>
+
             </View>
             {showGraph &&
                 <View style={styles.graphView}>
@@ -104,7 +111,7 @@ const styles = StyleSheet.create({
         // paddingVertical: 15,
 
         marginVertical: 10,
-        alignItems: "center",
+        // alignItems: "center",
         width: screenWidth
         // flex: 1
     },
@@ -112,7 +119,9 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: '#2E2F2F',
         fontWeight: '600',
-        paddingVertical: 15
+        paddingVertical: 15,
+        // alignSelf: 'flex-start',
+        paddingLeft: '3%'
     },
     sessionRow: {
         flexDirection: 'row'
@@ -125,6 +134,9 @@ const styles = StyleSheet.create({
 
     },
     graphView: {
+
+    },
+    downloadButton: {
 
     }
 })

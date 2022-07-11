@@ -9,7 +9,6 @@ import ConnectionPopUp from '../components/ConnectionPopUp'
 import DataContainer from '../components/DataContainer'
 import ControlsContainer from '../components/ControlsContainer'
 import OutputContainer from '../components/OutputContainer'
-import generate from '@babel/generator'
 
 const ble = new BleManager();
 
@@ -59,6 +58,7 @@ const TestingScreen = ({ researcherID }) => {
     const [descriptors, setDescriptors] = useState<Descriptor[]>([])
     const [characteristics, setCharacteristics] = useState<Characteristic[]>([])
     const [servicesMap, setServicesMap] = useState({})
+    const [smurfSelected, setSmurfSelected] = useState(true)
 
     // Progress SV's
     const [isLoading, setIsLoading] = useState(false)
@@ -172,7 +172,7 @@ const TestingScreen = ({ researcherID }) => {
         // #######
 
         // ### COMMENT THIS OUT ###
-        // const final_data = generateTestString('small')
+        // const final_data = generateTestString('small').split(',')
         // ######
         parseData(final_data, 'small')
         setReadyToAccept(true)
@@ -323,6 +323,15 @@ const TestingScreen = ({ researcherID }) => {
         resetInputs()
     }
 
+
+    const handleSmurfSelect = () => {
+        setSmurfSelected(true)
+    }
+
+    const handlePusherSelect = () => {
+        setSmurfSelected(false)
+    }
+
     useEffect(() => {
         return () => {
             ble.destroy();
@@ -346,7 +355,10 @@ const TestingScreen = ({ researcherID }) => {
                         handleDisconnect={disconnectDevice}
                         handleHideConnectionPopUp={hideConnectionPopUp}
                         isConnected={connected}
-                        connectedDevice={connectedDeviceName} />
+                        connectedDevice={connectedDeviceName}
+                        smurfSelected={smurfSelected}
+                        selectSMURF={handleSmurfSelect}
+                        selectPUSHER={handlePusherSelect} />
                 </View>
 
             </Modal>
@@ -363,7 +375,8 @@ const TestingScreen = ({ researcherID }) => {
                 sendOperationCode={sendOperationCode}
                 handleRequestSmallData={readSmallData}
                 handleRequestLargeData={readLargeData}
-                readyToTest={readyToRun} />
+                readyToTest={readyToRun}
+                smurfSelected={smurfSelected} />
             <OutputContainer
                 isConnected={connected}
                 currentTest={currentTestData}
