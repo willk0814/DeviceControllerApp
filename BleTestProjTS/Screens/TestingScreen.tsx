@@ -220,7 +220,7 @@ const TestingScreen = ({ researcherID }) => {
     const parseData = (arr, type: string) => {
         // arr.pop()
         let final_arr = arr.map(Number)
-        console.log(final_arr)
+        console.log(`Testing Data: ${final_arr}`)
         setCurrentTestData({ size: type, data: final_arr })
     }
 
