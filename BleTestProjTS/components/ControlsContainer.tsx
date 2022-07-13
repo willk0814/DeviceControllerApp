@@ -17,8 +17,15 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
 
                             <TouchableOpacity
                                 style={styles.buttonStyle}
-                                onPress={() => sendOperationCode("3")}>
-                                <Text style={styles.buttonText}>Return to Home Position</Text>
+                                onPress={() => sendOperationCode("2")}>
+                                <Text style={styles.buttonText}>Return to Home</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={styles.buttonStyle}
+                                onPress={() => sendOperationCode("1")}
+                                disabled={!readyToTest}>
+                                <Text style={styles.buttonText}>Get Initial Height</Text>
                             </TouchableOpacity>
 
                         </View>
@@ -30,12 +37,12 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                                 <Text style={styles.buttonText}>Small Flex Test</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity
+                            {/* <TouchableOpacity
                                 style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                                 onPress={handleRequestSmallData}
                                 disabled={!readyToTest}>
                                 <Text style={styles.buttonText}>Retrieve Small Data</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
 
                             <TouchableOpacity
                                 style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
@@ -44,12 +51,12 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                                 <Text style={styles.buttonText}>Large Flex Test</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity
+                            {/* <TouchableOpacity
                                 style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                                 onPress={handleRequestLargeData}
                                 disabled={!readyToTest}>
                                 <Text style={styles.buttonText}>Retrieve Large Data</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity> */}
 
                         </View>
                     </View>

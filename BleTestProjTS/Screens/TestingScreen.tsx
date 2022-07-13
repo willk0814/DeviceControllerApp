@@ -168,6 +168,18 @@ const TestingScreen = ({ researcherID }) => {
             CMD_CHAR_UUID,
             base64.encode(operationCode)
         )
+
+        if (operationCode == "8") {
+            setReadyToRun(false)
+            setTimeout(() => {
+                readSmallData()
+            }, 11000)
+        } else if (operationCode == "9") {
+            setReadyToRun(false)
+            setTimeout(() => {
+                readLargeData()
+            }, 15000)
+        }
     }
 
     // ##### IMPORTANT ##### - tests currently aren't working
@@ -186,7 +198,6 @@ const TestingScreen = ({ researcherID }) => {
         // ######
         parseData(final_data, 'small')
         setReadyToAccept(true)
-        setReadyToRun(false)
     }
 
     const readLargeData = async () => {
@@ -204,7 +215,6 @@ const TestingScreen = ({ researcherID }) => {
         // ######
         parseData(final_data.split(","), 'large')
         setReadyToAccept(true)
-        setReadyToRun(false)
     }
 
     const parseData = (arr, type: string) => {
