@@ -8,61 +8,57 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
             {
                 smurfSelected ? (
                     <View>
-                        <View style={[{ flexDirection: 'row' }, { justifyContent: 'center' }]}>
-                            <TouchableOpacity
-                                style={styles.buttonStyle}
-                                onPress={() => sendOperationCode("0")}>
-                                <Text style={styles.buttonText}>Calibrate</Text>
-                            </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.buttonStyle}
+                            onPress={() => sendOperationCode("0")}>
+                            <Text style={styles.buttonText}>Calibrate</Text>
+                        </TouchableOpacity>
 
-                            <TouchableOpacity
-                                style={styles.buttonStyle}
-                                onPress={() => sendOperationCode("2")}>
-                                <Text style={styles.buttonText}>Return to Home</Text>
-                            </TouchableOpacity>
+                        {/* <TouchableOpacity
+                            style={styles.buttonStyle}
+                            onPress={() => sendOperationCode("2")}>
+                            <Text style={styles.buttonText}>Return to Home</Text>
+                        </TouchableOpacity> */}
 
-                            <TouchableOpacity
-                                style={styles.buttonStyle}
-                                onPress={() => sendOperationCode("1")}
-                                disabled={!readyToTest}>
-                                <Text style={styles.buttonText}>Get Initial Height</Text>
-                            </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.buttonStyle}
+                            onPress={() => sendOperationCode("1")}
+                            disabled={!readyToTest}>
+                            <Text style={styles.buttonText}>Get Initial Height</Text>
+                        </TouchableOpacity>
 
-                        </View>
-                        <View style={[{ flexDirection: 'row' }, { justifyContent: 'center' }]}>
-                            <TouchableOpacity
-                                style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
-                                onPress={() => sendOperationCode("8")}
-                                disabled={!readyToTest}>
-                                <Text style={styles.buttonText}>Small Flex Test</Text>
-                            </TouchableOpacity>
+                        <TouchableOpacity
+                            style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
+                            onPress={() => sendOperationCode("8")}
+                            disabled={!readyToTest}>
+                            <Text style={styles.buttonText}>Small Flex Test</Text>
+                        </TouchableOpacity>
 
-                            {/* <TouchableOpacity
+                        {/* <TouchableOpacity
                                 style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                                 onPress={handleRequestSmallData}
                                 disabled={!readyToTest}>
                                 <Text style={styles.buttonText}>Retrieve Small Data</Text>
                             </TouchableOpacity> */}
 
-                            <TouchableOpacity
-                                style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
-                                onPress={() => sendOperationCode("9")}
-                                disabled={!readyToTest}>
-                                <Text style={styles.buttonText}>Large Flex Test</Text>
-                            </TouchableOpacity>
+                        <TouchableOpacity
+                            style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
+                            onPress={() => sendOperationCode("9")}
+                            disabled={!readyToTest}>
+                            <Text style={styles.buttonText}>Large Flex Test</Text>
+                        </TouchableOpacity>
 
-                            {/* <TouchableOpacity
+                        {/* <TouchableOpacity
                                 style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                                 onPress={handleRequestLargeData}
                                 disabled={!readyToTest}>
                                 <Text style={styles.buttonText}>Retrieve Large Data</Text>
                             </TouchableOpacity> */}
 
-                        </View>
                     </View>
                 ) : (
                         <TouchableOpacity
-                            style={!readyToTest ? [styles.buttonStyle, styles.disabledButton, { width: 300 }] : [styles.buttonStyle, { width: 300 }]}
+                            style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : [styles.buttonStyle]}
                             onPress={retrievePusherData}
                             disabled={!readyToTest}>
                             <Text style={styles.buttonText}>Retrieve Pusher Data</Text>
@@ -75,8 +71,8 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
 
 const styles = StyleSheet.create({
     pageContainer: {
-        flex: 2,
-        justifyContent: 'flex-start',
+        flex: 4,
+        justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 50
         // alignItems: 'center'
@@ -92,12 +88,13 @@ const styles = StyleSheet.create({
         padding: 5,
         borderRadius: 5,
         paddingVertical: 10,
-        width: 175
+        width: 200
+
     },
     buttonText: {
         color: '#cddddd',
-        fontSize: 20,
-        textAlign: 'center'
+        fontSize: 25,
+        alignSelf: 'center'
     },
     largeButtonStyle: {
         width: 350

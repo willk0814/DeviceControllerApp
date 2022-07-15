@@ -173,12 +173,12 @@ const TestingScreen = ({ researcherID }) => {
             setReadyToRun(false)
             setTimeout(() => {
                 readSmallData()
-            }, 11000)
+            }, 1100)
         } else if (operationCode == "9") {
             setReadyToRun(false)
             setTimeout(() => {
                 readLargeData()
-            }, 15000)
+            }, 1700)
         }
     }
 
