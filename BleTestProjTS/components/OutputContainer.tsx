@@ -4,7 +4,7 @@ import { LineChart } from 'react-native-chart-kit'
 
 const screenWidth = Dimensions.get('window').width * .90
 
-export default function OutputContainer({ isConnected, currentTest, handleAccept, handleReject, readyToAccept }) {
+export default function OutputContainer({ isConnected, currentTest, handleAccept, handleReject, readyToAccept, movePlant }) {
     let xLargeLabels = ["2.0", "2.5", "3.0", "3.5", "4.0", "4.5", "5.0", "5.5", "6.0"]
     let xSmallLables = ["2.0", "2.5", "3.0", "3.5", "4.0"]
     let xLabels = []
@@ -43,15 +43,15 @@ export default function OutputContainer({ isConnected, currentTest, handleAccept
             {
                 isConnected ? (
                     <View>
-                        <View style={{ flex: 4 }}>
+                        <View style={[{ flex: 4 }]}>
                             <LineChart
                                 data={data}
                                 width={screenWidth}
-                                height={650}
+                                height={400}
                                 chartConfig={chartConfig}
                                 bezier={true} />
                         </View>
-                        <View style={{ flex: 1 }}>
+                        <View style={[{ flex: 2 }, { alignItems: 'center' }]}>
                             <View style={styles.rowStyle}>
                                 <TouchableOpacity
                                     onPress={handleAccept}
@@ -67,6 +67,12 @@ export default function OutputContainer({ isConnected, currentTest, handleAccept
                                     <Text style={styles.buttonText}>Reject Result</Text>
                                 </TouchableOpacity>
                             </View>
+                            <TouchableOpacity
+                                style={[styles.buttonStyle, { width: 650 }]}
+                                onPress={movePlant}>
+                                <Text style={styles.buttonText}>Move to Next Plant</Text>
+
+                            </TouchableOpacity>
                         </View>
                     </View>
                 ) : (
@@ -83,7 +89,7 @@ export default function OutputContainer({ isConnected, currentTest, handleAccept
 
 const styles = StyleSheet.create({
     pageContainer: {
-        flex: 8,
+        flex: 10,
         alignItems: 'center',
         justify: 'content'
     },
@@ -101,7 +107,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#315a2a',
         borderRadius: 10,
         padding: 5,
-        margin: 15
+        margin: 15,
+        width: 310
     },
     rejectButton: {
         backgroundColor: 'red'
@@ -109,7 +116,8 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#cddddd',
         fontSize: 25,
-        paddingHorizontal: 12.5
+        paddingHorizontal: 12.5,
+        alignSelf: 'center'
     },
     disabledButton: {
         backgroundColor: 'grey'

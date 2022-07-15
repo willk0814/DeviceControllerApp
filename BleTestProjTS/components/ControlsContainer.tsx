@@ -9,7 +9,7 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                 smurfSelected ? (
                     <View>
                         <TouchableOpacity
-                            style={styles.buttonStyle}
+                            style={[styles.buttonStyle, { backgroundColor: 'red' }]}
                             onPress={() => sendOperationCode("0")}>
                             <Text style={styles.buttonText}>Calibrate</Text>
                         </TouchableOpacity>
@@ -71,7 +71,7 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
 
 const styles = StyleSheet.create({
     pageContainer: {
-        flex: 4,
+        flex: 5,
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 50
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
         padding: 5,
         borderRadius: 5,
         paddingVertical: 10,
-        width: 200
+        width: 650
 
     },
     buttonText: {

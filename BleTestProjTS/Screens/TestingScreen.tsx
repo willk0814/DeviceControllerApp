@@ -173,12 +173,12 @@ const TestingScreen = ({ researcherID }) => {
             setReadyToRun(false)
             setTimeout(() => {
                 readSmallData()
-            }, 1100)
+            }, 11000)
         } else if (operationCode == "9") {
             setReadyToRun(false)
             setTimeout(() => {
                 readLargeData()
-            }, 1700)
+            }, 17000)
         }
     }
 
@@ -363,6 +363,10 @@ const TestingScreen = ({ researcherID }) => {
         resetInputs()
     }
 
+    const handleMovePlant = () => {
+        resetInputs()
+    }
+
 
     const handleSmurfSelect = () => {
         setSmurfSelected(true)
@@ -424,7 +428,8 @@ const TestingScreen = ({ researcherID }) => {
                 currentTest={currentTestData}
                 handleAccept={handleAccept}
                 handleReject={handleReject}
-                readyToAccept={readyToAccept} />
+                readyToAccept={readyToAccept}
+                movePlant={handleMovePlant} />
         </View>
     )
 }
