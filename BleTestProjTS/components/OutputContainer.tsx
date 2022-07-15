@@ -4,7 +4,7 @@ import { LineChart } from 'react-native-chart-kit'
 
 const screenWidth = Dimensions.get('window').width * .90
 
-export default function OutputContainer({ isConnected, currentTest, handleAccept, handleReject, readyToAccept, movePlant }) {
+export default function OutputContainer({ isConnected, currentTest, handleAccept, handleReject, readyToAccept, movePlant, readyToMove }) {
     let xLargeLabels = ["2.0", "2.5", "3.0", "3.5", "4.0", "4.5", "5.0", "5.5", "6.0"]
     let xSmallLables = ["2.0", "2.5", "3.0", "3.5", "4.0"]
     let xLabels = []
@@ -69,7 +69,8 @@ export default function OutputContainer({ isConnected, currentTest, handleAccept
                             </View>
                             <TouchableOpacity
                                 style={[styles.buttonStyle, { width: 650 }]}
-                                onPress={movePlant}>
+                                onPress={movePlant}
+                                disabled={!readyToMove}>
                                 <Text style={styles.buttonText}>Move to Next Plant</Text>
 
                             </TouchableOpacity>

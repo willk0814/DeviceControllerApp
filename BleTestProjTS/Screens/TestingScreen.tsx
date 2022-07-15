@@ -85,6 +85,7 @@ const TestingScreen = ({ researcherID }) => {
 
     // SV's for Run logic
     const [readyToRun, setReadyToRun] = useState(false)
+    const [readyToMove, setReadyToMove] = useState(false)
 
     const scanDevices = () => {
         setIsLoading(true)
@@ -320,13 +321,6 @@ const TestingScreen = ({ researcherID }) => {
         }
     }
 
-    const resetInputs = () => {
-        setCurrentTestPlant('')
-        setCurrentTestType('')
-        setReadyToRun(false)
-        setCurrentTestData({ size: 'small', data: [0, 0, 0, 0] })
-        setReadyToAccept(false)
-    }
 
     const handleAccept = async () => {
         let key = generateKey()
@@ -347,7 +341,9 @@ const TestingScreen = ({ researcherID }) => {
         storeData('sessions', tmpSessions)
         storeData(key, JSON.stringify(currentTestData))
 
-        resetInputs()
+        setCurrentTestData({ size: 'small', data: [0, 0, 0, 0] })
+        setReadyToAccept(false)
+        setReadyToMove(true)
     }
 
     const storeData = async (storageKey, value) => {
@@ -360,11 +356,17 @@ const TestingScreen = ({ researcherID }) => {
 
 
     const handleReject = () => {
-        resetInputs()
+        setCurrentTestData({ size: 'small', data: [0, 0, 0, 0] })
+        setReadyToAccept(false)
+        setReadyToMove(true)
     }
 
     const handleMovePlant = () => {
-        resetInputs()
+        sendOperationCode('2')
+        setCurrentTestPlant('')
+        setCurrentTestType('')
+        setReadyToRun(false)
+        setReadyToAccept(false)
     }
 
 
@@ -429,7 +431,8 @@ const TestingScreen = ({ researcherID }) => {
                 handleAccept={handleAccept}
                 handleReject={handleReject}
                 readyToAccept={readyToAccept}
-                movePlant={handleMovePlant} />
+                movePlant={handleMovePlant}
+                readyToMove={readyToMove} />
         </View>
     )
 }
