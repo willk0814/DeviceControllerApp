@@ -68,7 +68,7 @@ export default function OutputContainer({ isConnected, currentTest, handleAccept
                                 </TouchableOpacity>
                             </View>
                             <TouchableOpacity
-                                style={[styles.buttonStyle, { width: 650 }]}
+                                style={!readyToMove ? [styles.buttonStyle, { width: 650 }, styles.disabledButton] : [styles.buttonStyle, { width: 650 }]}
                                 onPress={movePlant}
                                 disabled={!readyToMove}>
                                 <Text style={styles.buttonText}>Move to Next Plant</Text>

@@ -209,6 +209,7 @@ const TestingScreen = ({ researcherID }) => {
             SMURF_COMM_SERVICE_UUID, SMURF_DATA_CHAR_2_UUID)
 
         let final_data = base64.decode(data_1.value) + base64.decode(data_2.value)
+        console.log(`Large Flex Test Data: ${final_data}`)
         // // #######
 
         // ### COMMENT THIS OUT ###
