@@ -41,7 +41,7 @@ const reducer = (
             const { payload: device } = action;
 
             // check if the detected device is not already added to the list
-            if (device && !state.find((dev) => dev.id === device.id)) {
+            if (device.name != null && device && !state.find((dev) => dev.id === device.id)) {
                 return [...state, device];
             }
             return state;
@@ -209,6 +209,7 @@ const TestingScreen = ({ researcherID }) => {
             SMURF_COMM_SERVICE_UUID, SMURF_DATA_CHAR_2_UUID)
 
         let tmp_data_1 = base64.decode(data_1.value).split(",")
+        console.log(`Data Char 1 len: ${tmp_data_1.length()}`)
         console.log(`Data Char 1: ${tmp_data_1}`)
         let tmp_data_2 = base64.decode(data_2.value).split(",")
         console.log(`Data Char 2: ${tmp_data_2}`)
