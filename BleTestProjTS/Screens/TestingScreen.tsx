@@ -208,16 +208,20 @@ const TestingScreen = ({ researcherID }) => {
         const data_2 = await connectedDeviceObj.readCharacteristicForService(
             SMURF_COMM_SERVICE_UUID, SMURF_DATA_CHAR_2_UUID)
 
-        console.log(`Data Char 1: ${base64.decode(data_1.value)}`)
-        console.log(`Data Char 2: ${base64.decode(data_2.value)}`)
-        let final_data = base64.decode(data_1.value) + base64.decode(data_2.value)
+        let tmp_data_1 = base64.decode(data_1.value).split(",")
+        let tmp_data_2 = base64.decode(data_2.value).split(",")
+        const final_data = tmp_data_1.concatenate(tmp_data_2)
+
+        // console.log(`Data Char 1: ${base64.decode(data_1.value)}`)
+        // console.log(`Data Char 2: ${base64.decode(data_2.value)}`)
+        // let final_data = base64.decode(data_1.value) + base64.decode(data_2.value)
         console.log(`Large Flex Test Data: ${final_data}`)
 
         // // #######
         // ### COMMENT THIS OUT ###
         // const final_data = generateTestString('large')
         // ######
-        parseData(final_data.split(","), 'large')
+        parseData(final_data, 'large')
         setReadyToAccept(true)
     }
 
