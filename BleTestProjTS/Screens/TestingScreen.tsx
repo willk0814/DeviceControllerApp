@@ -209,14 +209,11 @@ const TestingScreen = ({ researcherID }) => {
             SMURF_COMM_SERVICE_UUID, SMURF_DATA_CHAR_2_UUID)
 
         let tmp_data_1 = base64.decode(data_1.value).split(",")
+        console.log(`Data Char 1: ${tmp_data_1}`)
         let tmp_data_2 = base64.decode(data_2.value).split(",")
-
+        console.log(`Data Char 2: ${tmp_data_2}`)
 
         const final_data = tmp_data_1.concat(tmp_data_2)
-
-        // console.log(`Data Char 1: ${base64.decode(data_1.value)}`)
-        // console.log(`Data Char 2: ${base64.decode(data_2.value)}`)
-        // let final_data = base64.decode(data_1.value) + base64.decode(data_2.value)
         console.log(`Large Flex Test Data: ${final_data}`)
 
         // // #######
@@ -230,7 +227,7 @@ const TestingScreen = ({ researcherID }) => {
     const parseData = (arr, type: string) => {
         // arr.pop()
         let final_arr = arr.map(Number)
-        console.log(`Testing Data: ${final_arr}`)
+        console.log(`Parsed Data: ${final_arr}`)
         setCurrentTestData({ size: type, data: final_arr })
     }
 
