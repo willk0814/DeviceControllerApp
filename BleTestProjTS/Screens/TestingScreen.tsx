@@ -210,7 +210,9 @@ const TestingScreen = ({ researcherID }) => {
 
         let tmp_data_1 = base64.decode(data_1.value).split(",")
         let tmp_data_2 = base64.decode(data_2.value).split(",")
-        const final_data = tmp_data_1.concatenate(tmp_data_2)
+
+
+        const final_data = tmp_data_1.concat(tmp_data_2)
 
         // console.log(`Data Char 1: ${base64.decode(data_1.value)}`)
         // console.log(`Data Char 2: ${base64.decode(data_2.value)}`)
