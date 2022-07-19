@@ -4,6 +4,10 @@ import { BleManager, Device, Service, Characteristic, Descriptor } from 'react-n
 import base64 from 'react-native-base64'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import XLSX from 'xlsx'
+import * as FileSystem from 'expo-file-system'
+import * as Sharing from 'expo-sharing'
+
 // Page imports
 import ConnectionPopUp from '../components/ConnectionPopUp'
 import DataContainer from '../components/DataContainer'
@@ -27,9 +31,6 @@ const PUSHER_DATA_CHAR_3_UUID = '00002345-0000-1000-8000-00805f9b34fb';
 const PUSHER_DATA_CHAR_4_UUID = '0000abcd-0000-1000-8000-00805f9b34fb';
 const PUSHER_DATA_CHAR_5_UUID = '0000abcd-0000-1000-8000-00805f9b34fb';
 
-
-
-// The goal of this component is to house the majority of state vars that way they can be distributed as we need
 
 // Reducer to check each scanned device before adding it to the list - ble scan may return the same device more than once
 const reducer = (
@@ -57,11 +58,11 @@ const TestingScreen = ({ researcherID }) => {
     const [scannedDevices, dispatch] = useReducer(reducer, [])
 
     // Device Connection SV's
-    const [connected, setConnected] = useState(false)
+    const [connected, setConnected] = useState(true)
     const [connectedDevice, setConnectedDevice] = useState()
     const [connectedDeviceObj, setConnectedDeviceObj] = useState<Device>()
     const [desiredDevice, setDesiredDevice] = useState<Device>()
-    const [connectedDeviceName, setConnectedDeviceName] = useState('')
+    const [connectedDeviceName, setConnectedDeviceName] = useState('Device 1')
 
     // SV's connected Device Services and Characteristics
     const [services, setServices] = useState<Service[]>([])
@@ -163,23 +164,23 @@ const TestingScreen = ({ researcherID }) => {
 
     // function to send a number 0 - 8 to the SMURF in order to execute the corresponding characteristic
     const sendOperationCode = async (operationCode: string) => {
-        console.log(`Sending operation Code: ${operationCode}`)
-        await connectedDeviceObj.writeCharacteristicWithResponseForService(
-            SMURF_COMM_SERVICE_UUID,
-            CMD_CHAR_UUID,
-            base64.encode(operationCode)
-        )
+        // console.log(`Sending operation Code: ${operationCode}`)
+        // await connectedDeviceObj.writeCharacteristicWithResponseForService(
+        //     SMURF_COMM_SERVICE_UUID,
+        //     CMD_CHAR_UUID,
+        //     base64.encode(operationCode)
+        // )
 
         if (operationCode == "8") {
             setReadyToRun(false)
             setTimeout(() => {
                 readSmallData()
-            }, 11000)
+            }, 1000)
         } else if (operationCode == "9") {
             setReadyToRun(false)
             setTimeout(() => {
                 readLargeData()
-            }, 17000)
+            }, 1000)
         }
     }
 
@@ -187,15 +188,15 @@ const TestingScreen = ({ researcherID }) => {
     // The below to functions have a test written in that creates random input rather than pulling from the connected Device, toggle the comments to change the input source
     const readSmallData = async () => {
         // ### COMMENT THIS IN TO READ FROM DEVICE ###
-        const data = await connectedDeviceObj.readCharacteristicForService(
-            SMURF_COMM_SERVICE_UUID,
-            SMURF_DATA_CHAR_1_UUID)
+        // const data = await connectedDeviceObj.readCharacteristicForService(
+        //     SMURF_COMM_SERVICE_UUID,
+        //     SMURF_DATA_CHAR_1_UUID)
 
-        let final_data = base64.decode(data.value).split(",")
+        // let final_data = base64.decode(data.value).split(",")
         // #######
 
         // ### COMMENT THIS OUT ###
-        // const final_data = generateTestString('small').split(',')
+        const final_data = generateTestString('small').split(',')
         // ######
         parseData(final_data, 'small')
         setReadyToAccept(true)
@@ -203,27 +204,27 @@ const TestingScreen = ({ researcherID }) => {
 
     const readLargeData = async () => {
         // ### COMMENT THIS IN TO READ FROM DEVICE ###
-        const data_1 = await connectedDeviceObj.readCharacteristicForService(
-            SMURF_COMM_SERVICE_UUID, SMURF_DATA_CHAR_1_UUID)
-        const data_2 = await connectedDeviceObj.readCharacteristicForService(
-            SMURF_COMM_SERVICE_UUID, SMURF_DATA_CHAR_2_UUID)
+        // const data_1 = await connectedDeviceObj.readCharacteristicForService(
+        //     SMURF_COMM_SERVICE_UUID, SMURF_DATA_CHAR_1_UUID)
+        // const data_2 = await connectedDeviceObj.readCharacteristicForService(
+        //     SMURF_COMM_SERVICE_UUID, SMURF_DATA_CHAR_2_UUID)
 
-        let tmp_data_1 = base64.decode(data_1.value).split(",")
-        console.log(`Data Char 1 len: ${tmp_data_1.length}`)
-        if (tmp_data_1.length == 5) {
-            tmp_data_1.pop()
-        }
-        console.log(`Adjusted length: ${tmp_data_1.length}`)
-        console.log(`Data Char 1: ${tmp_data_1}`)
-        let tmp_data_2 = base64.decode(data_2.value).split(",")
-        console.log(`Data Char 2: ${tmp_data_2}`)
+        // let tmp_data_1 = base64.decode(data_1.value).split(",")
+        // console.log(`Data Char 1 len: ${tmp_data_1.length}`)
+        // if (tmp_data_1.length == 5) {
+        //     tmp_data_1.pop()
+        // }
+        // console.log(`Adjusted length: ${tmp_data_1.length}`)
+        // console.log(`Data Char 1: ${tmp_data_1}`)
+        // let tmp_data_2 = base64.decode(data_2.value).split(",")
+        // console.log(`Data Char 2: ${tmp_data_2}`)
 
-        const final_data = tmp_data_1.concat(tmp_data_2)
-        console.log(`Large Flex Test Data: ${final_data}`)
+        // const final_data = tmp_data_1.concat(tmp_data_2)
+        // console.log(`Large Flex Test Data: ${final_data}`)
 
         // // #######
         // ### COMMENT THIS OUT ###
-        // const final_data = generateTestString('large')
+        const final_data = generateTestString('large').split(",")
         // ######
         parseData(final_data, 'large')
         setReadyToAccept(true)
@@ -288,7 +289,7 @@ const TestingScreen = ({ researcherID }) => {
         let typeChar = currentTestType
         let device = connectedDeviceName
         let researcher = researcherID
-        tmpKey = `${plant}  ${date}  ${device}  ${researcher}  ${typeChar}`
+        tmpKey = `${plant}$${date}$${device}$${researcher}$${typeChar}`
         return tmpKey
 
     }
@@ -351,7 +352,7 @@ const TestingScreen = ({ researcherID }) => {
         let tmpSessions = JSON.stringify(currentSessions)
         storeData('sessions', tmpSessions)
         storeData(key, JSON.stringify(currentTestData))
-
+        exportExcel(key)
         setCurrentTestData({ size: 'small', data: [0, 0, 0, 0] })
         setReadyToAccept(false)
         setReadyToMove(true)
@@ -388,6 +389,70 @@ const TestingScreen = ({ researcherID }) => {
     const handlePusherSelect = () => {
         setSmurfSelected(false)
         setCurrentTestType('PUSHER')
+    }
+
+    const exportExcel = async (value) => {
+        let tmpArr = [2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
+        const infoArray = value.split("$")
+        console.log(`Info array at the beginning of exporting ${infoArray}`)
+        const dateArray = infoArray[1].split(" ")
+
+        let data = [{
+            "Tester Name": infoArray[3],
+            "Date": dateArray[0],
+            "Plant ID - Replicate Number": infoArray[0],
+            "Planting Date": "",
+            "Test Type": infoArray[4],
+            "Torsional Stiffness": "",
+            "Additional Notes": ""
+        },
+        {},
+        {
+            "Tester Name": "Angle (degrees)",
+            "Date": "Force (N)",
+            "Plant ID - Replicate Number": "Torque (N*m)"
+        }];
+
+        let tmp = JSON.parse(await AsyncStorage.getItem(value))
+        console.log(`Retrieved: ${tmp}`)
+        let tmpData = tmp.data
+        let tmpSize = tmp.size
+        console.log(`Data exporting: ${tmpData}`)
+        console.log(`Size Exporting: ${tmpSize}`)
+
+        let tempHeight = 0.15;
+
+        for (var i in tmpData) {
+            let torque = parseInt(tmpData[i]) * tempHeight;
+            let tmp = {
+                "Tester Name": tmpArr[i],
+                "Date": tmpData[i],
+                "Plant ID - Replicate Number": torque.toString()
+            }
+            data.push(tmp);
+        }
+
+        let ws = XLSX.utils.json_to_sheet(data);
+        let wb = XLSX.utils.book_new();
+
+        XLSX.utils.book_append_sheet(wb, ws, "PlantData")
+        const wbout = XLSX.write(wb, {
+            type: 'base64',
+            bookType: "xlsx"
+        });
+
+        const fileName = infoArray[0] + '_' + dateArray[0].replaceAll('/', '_') + '_' + dateArray[1].replaceAll(':', '_') + '.xlsx'
+        const uri = FileSystem.cacheDirectory + fileName.replace(' ', '_');
+        console.log(`Writing to ${JSON.stringify(uri)} with text: ${wbout}`);
+        await FileSystem.writeAsStringAsync(uri, wbout, {
+            encoding: FileSystem.EncodingType.Base64
+        });
+
+        await Sharing.shareAsync(uri, {
+            mimeType: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            dialogTitle: "Data for Spreadsheets",
+            UTI: 'com.microsoft.excel.xlsx'
+        });
     }
 
     useEffect(() => {

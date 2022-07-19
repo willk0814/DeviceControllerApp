@@ -68,13 +68,14 @@ export default function AvailableSession({ keyVal, testData, testSize }) {
 
     }
 
-    const kArr = keyVal.split("  ")
-    let keyDescription = `Plant: ${kArr[0]}, ${kArr[1]}, Device: ${kArr[2]}, ${kArr[3]}`
+    const kArr = keyVal.split("$")
+    let keyDescription = `Plant: ${kArr[0]}, ${kArr[1]}, ${kArr[2]}, ${kArr[3]}`
 
     return (
         <View style={styles.sessionContainer}>
             <View style={styles.sessionRow}>
                 <TouchableOpacity
+                    style={styles.buttonStyle}
                     onPress={handlePress} >
                     <Text style={styles.sessionText}>{keyDescription}</Text>
                 </TouchableOpacity>
@@ -82,8 +83,7 @@ export default function AvailableSession({ keyVal, testData, testSize }) {
                 <TouchableOpacity
                     style={styles.downloadButton}
                     onPress={() => console.log('Download Pressed')}>
-                    <Text style={styles.sessionText}>Download</Text>
-
+                    <Text style={styles.downloadText}>Download</Text>
                 </TouchableOpacity>
 
             </View>
@@ -136,7 +136,18 @@ const styles = StyleSheet.create({
     graphView: {
 
     },
+    downloadText: {
+        textAlign: "right",
+        fontSize: 20,
+        color: '#2E2F2F',
+        fontWeight: '600',
+        paddingVertical: 15
+    },
     downloadButton: {
-
+        flex: 1,
+        marginRight: 10
+    },
+    buttonStyle: {
+        flex: 4
     }
 })

@@ -9,8 +9,9 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                 smurfSelected ? (
                     <View>
                         <TouchableOpacity
-                            style={[styles.buttonStyle, { backgroundColor: 'red' }]}
-                            onPress={() => sendOperationCode("0")}>
+                            style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : [styles.buttonStyle, { backgroundColor: 'red' }]}
+                            onPress={() => sendOperationCode("0")}
+                            disabled={!readyToTest}>
                             <Text style={styles.buttonText}>Calibrate</Text>
                         </TouchableOpacity>
 
@@ -21,7 +22,7 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                         </TouchableOpacity> */}
 
                         <TouchableOpacity
-                            style={styles.buttonStyle}
+                            style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                             onPress={() => sendOperationCode("1")}
                             disabled={!readyToTest}>
                             <Text style={styles.buttonText}>Get Initial Height</Text>
