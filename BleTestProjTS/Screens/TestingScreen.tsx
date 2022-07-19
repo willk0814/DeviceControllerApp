@@ -58,11 +58,11 @@ const TestingScreen = ({ researcherID }) => {
     const [scannedDevices, dispatch] = useReducer(reducer, [])
 
     // Device Connection SV's
-    const [connected, setConnected] = useState(true)
+    const [connected, setConnected] = useState(false)
     const [connectedDevice, setConnectedDevice] = useState()
     const [connectedDeviceObj, setConnectedDeviceObj] = useState<Device>()
     const [desiredDevice, setDesiredDevice] = useState<Device>()
-    const [connectedDeviceName, setConnectedDeviceName] = useState('Device 1')
+    const [connectedDeviceName, setConnectedDeviceName] = useState('')
 
     // SV's connected Device Services and Characteristics
     const [services, setServices] = useState<Service[]>([])
@@ -164,23 +164,23 @@ const TestingScreen = ({ researcherID }) => {
 
     // function to send a number 0 - 8 to the SMURF in order to execute the corresponding characteristic
     const sendOperationCode = async (operationCode: string) => {
-        // console.log(`Sending operation Code: ${operationCode}`)
-        // await connectedDeviceObj.writeCharacteristicWithResponseForService(
-        //     SMURF_COMM_SERVICE_UUID,
-        //     CMD_CHAR_UUID,
-        //     base64.encode(operationCode)
-        // )
+        console.log(`Sending operation Code: ${operationCode}`)
+        await connectedDeviceObj.writeCharacteristicWithResponseForService(
+            SMURF_COMM_SERVICE_UUID,
+            CMD_CHAR_UUID,
+            base64.encode(operationCode)
+        )
 
         if (operationCode == "8") {
             setReadyToRun(false)
             setTimeout(() => {
                 readSmallData()
-            }, 1000)
+            }, 11000)
         } else if (operationCode == "9") {
             setReadyToRun(false)
             setTimeout(() => {
                 readLargeData()
-            }, 1000)
+            }, 17000)
         }
     }
 
@@ -188,15 +188,15 @@ const TestingScreen = ({ researcherID }) => {
     // The below to functions have a test written in that creates random input rather than pulling from the connected Device, toggle the comments to change the input source
     const readSmallData = async () => {
         // ### COMMENT THIS IN TO READ FROM DEVICE ###
-        // const data = await connectedDeviceObj.readCharacteristicForService(
-        //     SMURF_COMM_SERVICE_UUID,
-        //     SMURF_DATA_CHAR_1_UUID)
+        const data = await connectedDeviceObj.readCharacteristicForService(
+            SMURF_COMM_SERVICE_UUID,
+            SMURF_DATA_CHAR_1_UUID)
 
-        // let final_data = base64.decode(data.value).split(",")
+        let final_data = base64.decode(data.value).split(",")
         // #######
 
         // ### COMMENT THIS OUT ###
-        const final_data = generateTestString('small').split(',')
+        // const final_data = generateTestString('small').split(',')
         // ######
         parseData(final_data, 'small')
         setReadyToAccept(true)
@@ -204,27 +204,27 @@ const TestingScreen = ({ researcherID }) => {
 
     const readLargeData = async () => {
         // ### COMMENT THIS IN TO READ FROM DEVICE ###
-        // const data_1 = await connectedDeviceObj.readCharacteristicForService(
-        //     SMURF_COMM_SERVICE_UUID, SMURF_DATA_CHAR_1_UUID)
-        // const data_2 = await connectedDeviceObj.readCharacteristicForService(
-        //     SMURF_COMM_SERVICE_UUID, SMURF_DATA_CHAR_2_UUID)
+        const data_1 = await connectedDeviceObj.readCharacteristicForService(
+            SMURF_COMM_SERVICE_UUID, SMURF_DATA_CHAR_1_UUID)
+        const data_2 = await connectedDeviceObj.readCharacteristicForService(
+            SMURF_COMM_SERVICE_UUID, SMURF_DATA_CHAR_2_UUID)
 
-        // let tmp_data_1 = base64.decode(data_1.value).split(",")
-        // console.log(`Data Char 1 len: ${tmp_data_1.length}`)
-        // if (tmp_data_1.length == 5) {
-        //     tmp_data_1.pop()
-        // }
+        let tmp_data_1 = base64.decode(data_1.value).split(",")
+        console.log(`Data Char 1 len: ${tmp_data_1.length}`)
+        if (tmp_data_1.length == 5) {
+            tmp_data_1.pop()
+        }
         // console.log(`Adjusted length: ${tmp_data_1.length}`)
         // console.log(`Data Char 1: ${tmp_data_1}`)
-        // let tmp_data_2 = base64.decode(data_2.value).split(",")
+        let tmp_data_2 = base64.decode(data_2.value).split(",")
         // console.log(`Data Char 2: ${tmp_data_2}`)
 
-        // const final_data = tmp_data_1.concat(tmp_data_2)
+        const final_data = tmp_data_1.concat(tmp_data_2)
         // console.log(`Large Flex Test Data: ${final_data}`)
 
         // // #######
         // ### COMMENT THIS OUT ###
-        const final_data = generateTestString('large').split(",")
+        // const final_data = generateTestString('large').split(",")
         // ######
         parseData(final_data, 'large')
         setReadyToAccept(true)
