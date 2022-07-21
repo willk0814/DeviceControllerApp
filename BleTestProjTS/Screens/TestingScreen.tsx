@@ -74,7 +74,6 @@ const TestingScreen = ({ researcherID }) => {
     // Progress SV's
     const [isLoading, setIsLoading] = useState(false)
     const [displayConnectionPopUp, setDisplayConnectionPopUp] = useState(true)
-    const [readyToAccept, setReadyToAccept] = useState(false)
 
     // current Test SV's
     const [currentTestData, setCurrentTestData] = useState({
@@ -84,9 +83,12 @@ const TestingScreen = ({ researcherID }) => {
     const [currentTestType, setCurrentTestType] = useState('')
     const [currentTestPlant, setCurrentTestPlant] = useState('')
 
-    // SV's for Run logic
+    // SV's for Run and Button logic
     const [readyToRun, setReadyToRun] = useState(false)
     const [readyToMove, setReadyToMove] = useState(false)
+    const [calibrated, setCalibrated] = useState(false)
+    const [storedInitHeight, setStoredInitHeight] = useState(false)
+    const [readyToAccept, setReadyToAccept] = useState(false)
 
     const scanDevices = () => {
         setIsLoading(true)
@@ -159,6 +161,7 @@ const TestingScreen = ({ researcherID }) => {
         setConnected(false)
         setConnectedDevice('')
         setServices([])
+        setCalibrated(false)
 
     }
 
@@ -171,7 +174,13 @@ const TestingScreen = ({ researcherID }) => {
             base64.encode(operationCode)
         )
 
-        if (operationCode == "8") {
+        if (operationCode == "0") {
+            setCalibrated(true)
+        } else if (operationCode == "1") {
+            setStoredInitHeight(true)
+        } else if (operationCode == "2") {
+            setStoredInitHeight(true)
+        } else if (operationCode == "8") {
             setReadyToRun(false)
             setTimeout(() => {
                 readSmallData()
@@ -214,15 +223,15 @@ const TestingScreen = ({ researcherID }) => {
         if (tmp_data_1.length == 5) {
             tmp_data_1.pop()
         }
-        // console.log(`Adjusted length: ${tmp_data_1.length}`)
-        // console.log(`Data Char 1: ${tmp_data_1}`)
+        console.log(`Adjusted length: ${tmp_data_1.length}`)
+        console.log(`Data Char 1: ${tmp_data_1}`)
         let tmp_data_2 = base64.decode(data_2.value).split(",")
-        // console.log(`Data Char 2: ${tmp_data_2}`)
+        console.log(`Data Char 2: ${tmp_data_2}`)
 
         const final_data = tmp_data_1.concat(tmp_data_2)
-        // console.log(`Large Flex Test Data: ${final_data}`)
+        console.log(`Large Flex Test Data: ${final_data}`)
 
-        // // #######
+        // #######
         // ### COMMENT THIS OUT ###
         // const final_data = generateTestString('large').split(",")
         // ######
@@ -356,6 +365,7 @@ const TestingScreen = ({ researcherID }) => {
         setCurrentTestData({ size: 'small', data: [0, 0, 0, 0] })
         setReadyToAccept(false)
         setReadyToMove(true)
+        setReadyToRun(true)
     }
 
     const storeData = async (storageKey, value) => {
@@ -371,6 +381,7 @@ const TestingScreen = ({ researcherID }) => {
         setCurrentTestData({ size: 'small', data: [0, 0, 0, 0] })
         setReadyToAccept(false)
         setReadyToMove(true)
+        setReadyToRun(true)
     }
 
     const handleMovePlant = () => {
@@ -379,6 +390,7 @@ const TestingScreen = ({ researcherID }) => {
         setCurrentTestType('')
         setReadyToRun(false)
         setReadyToAccept(false)
+        setStoredInitHeight(false)
     }
 
 
@@ -392,7 +404,7 @@ const TestingScreen = ({ researcherID }) => {
     }
 
     const exportExcel = async (value) => {
-        let tmpArr = [2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
+        let angleArr = [2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
         const infoArray = value.split("$")
         console.log(`Info array at the beginning of exporting ${infoArray}`)
         const dateArray = infoArray[1].split(" ")
@@ -414,22 +426,25 @@ const TestingScreen = ({ researcherID }) => {
         }];
 
         let tmp = JSON.parse(await AsyncStorage.getItem(value))
-        console.log(`Retrieved: ${tmp}`)
+        // console.log(`Retrieved: ${tmp}`)
         let tmpData = tmp.data
         let tmpSize = tmp.size
-        console.log(`Data exporting: ${tmpData}`)
-        console.log(`Size Exporting: ${tmpSize}`)
-
-        let tempHeight = 0.15;
+        // console.log(`Data exporting: ${tmpData}`)
+        // console.log(`Size Exporting: ${tmpSize}`)
 
         for (var i in tmpData) {
-            let torque = parseInt(tmpData[i]) * tempHeight;
+            let tmp_force = parseInt(tmpData[i]) * 9.81
+            let torque = tmp_force * Math.sin(90 - angleArr[i]);
             let tmp = {
-                "Tester Name": tmpArr[i],
+                "Tester Name": angleArr[i],
                 "Date": tmpData[i],
                 "Plant ID - Replicate Number": torque.toString()
             }
             data.push(tmp);
+            console.log(`Test Data being added;
+                angle: ${angleArr[i]}
+                force: ${tmpData[i]}
+                torge: ${torque.toString()}`)
         }
 
         let ws = XLSX.utils.json_to_sheet(data);
@@ -500,7 +515,9 @@ const TestingScreen = ({ researcherID }) => {
                 handleRequestLargeData={readLargeData}
                 readyToTest={readyToRun}
                 smurfSelected={smurfSelected}
-                retrievePusherData={retrievePusherData} />
+                retrievePusherData={retrievePusherData}
+                calibrated={calibrated}
+                storedInitHeight={storedInitHeight} />
             <OutputContainer
                 isConnected={connected}
                 currentTest={currentTestData}

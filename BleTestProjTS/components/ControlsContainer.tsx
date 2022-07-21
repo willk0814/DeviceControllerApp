@@ -1,7 +1,12 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 
-export default function ControlsContainer({ isConnected, sendOperationCode, handleRequestSmallData, handleRequestLargeData, readyToTest, smurfSelected, retrievePusherData }) {
+export default function ControlsContainer({ isConnected, sendOperationCode, handleRequestSmallData, handleRequestLargeData, readyToTest, smurfSelected, retrievePusherData, calibrated, storedInitHeight }) {
+
+    console.log(`Ready to Test ${readyToTest}`)
+    console.log(`Stored Init Height ${storedInitHeight}`)
+    console.log(`From Controls Container, testing disabled? ${!(readyToTest && storedInitHeight)}`)
+
     return (
         <View style={styles.pageContainer}>
 
@@ -9,9 +14,8 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                 smurfSelected ? (
                     <View>
                         <TouchableOpacity
-                            style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : [styles.buttonStyle, { backgroundColor: 'red' }]}
-                            onPress={() => sendOperationCode("0")}
-                            disabled={!readyToTest}>
+                            style={calibrated ? [styles.buttonStyle, { backgroundColor: 'red' }] : [styles.buttonStyle]}
+                            onPress={() => sendOperationCode("0")}>
                             <Text style={styles.buttonText}>Calibrate</Text>
                         </TouchableOpacity>
 
@@ -22,39 +26,25 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                         </TouchableOpacity> */}
 
                         <TouchableOpacity
-                            style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
+                            style={storedInitHeight ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                             onPress={() => sendOperationCode("1")}
-                            disabled={!readyToTest}>
+                            disabled={storedInitHeight}>
                             <Text style={styles.buttonText}>Get Initial Height</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity
-                            style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
+                            style={!(readyToTest && storedInitHeight) ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                             onPress={() => sendOperationCode("8")}
-                            disabled={!readyToTest}>
+                            disabled={!(readyToTest && storedInitHeight)}>
                             <Text style={styles.buttonText}>Small Flex Test</Text>
                         </TouchableOpacity>
 
-                        {/* <TouchableOpacity
-                                style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
-                                onPress={handleRequestSmallData}
-                                disabled={!readyToTest}>
-                                <Text style={styles.buttonText}>Retrieve Small Data</Text>
-                            </TouchableOpacity> */}
-
                         <TouchableOpacity
-                            style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
+                            style={!(readyToTest && storedInitHeight) ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                             onPress={() => sendOperationCode("9")}
-                            disabled={!readyToTest}>
+                            disabled={!(readyToTest && storedInitHeight)}>
                             <Text style={styles.buttonText}>Large Flex Test</Text>
                         </TouchableOpacity>
-
-                        {/* <TouchableOpacity
-                                style={!readyToTest ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
-                                onPress={handleRequestLargeData}
-                                disabled={!readyToTest}>
-                                <Text style={styles.buttonText}>Retrieve Large Data</Text>
-                            </TouchableOpacity> */}
 
                     </View>
                 ) : (
