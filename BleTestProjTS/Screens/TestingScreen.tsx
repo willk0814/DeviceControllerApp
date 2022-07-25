@@ -434,7 +434,7 @@ const TestingScreen = ({ researcherID }) => {
 
         for (var i in tmpData) {
             let tmp_force = parseInt(tmpData[i]) * 9.81
-            let torque = tmp_force * Math.sin(90 - angleArr[i]);
+            let torque = tmp_force * Math.sin(90 - angleArr[i]) * 0.15
             let tmp = {
                 "Tester Name": angleArr[i],
                 "Date": tmpData[i],
