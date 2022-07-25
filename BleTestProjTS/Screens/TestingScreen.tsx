@@ -443,7 +443,7 @@ const TestingScreen = ({ researcherID }) => {
             data.push(tmp);
             console.log(`Test Data being added;
                 angle: ${angleArr[i]}
-                force: ${tmpData[i]}
+                force: ${tmp_force}
                 torge: ${torque.toString()}`)
         }
 
