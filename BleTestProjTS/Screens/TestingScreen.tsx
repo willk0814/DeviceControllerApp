@@ -433,7 +433,7 @@ const TestingScreen = ({ researcherID }) => {
         }];
 
         for (var i in tmpData) {
-            let tmp_force = parseInt(tmpData[i]) * 9.81
+            let tmp_force = parseFloat(tmpData[i]) * 9.81
             let torque = tmp_force * Math.sin(90 - angleArr[i]) * 0.15
             let tmp = {
                 "Tester Name": angleArr[i],
@@ -466,9 +466,10 @@ const TestingScreen = ({ researcherID }) => {
         });
     }
 
-    const findStiffness = (data, angles) => {
-        let stiffness = 0
+    const findStiffness = (data) => {
+        console.log(`Finding Torsional stiffness for the following data: ${data}`)
 
+        let stiffness = 0
         let count = 0
         let sum = 0
 
