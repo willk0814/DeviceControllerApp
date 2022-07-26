@@ -176,6 +176,7 @@ const TestingScreen = ({ researcherID }) => {
 
         if (operationCode == "0") {
             setCalibrated(true)
+            setStoredInitHeight(false)
         } else if (operationCode == "1") {
             setStoredInitHeight(true)
         } else if (operationCode == "2") {
@@ -477,11 +478,8 @@ const TestingScreen = ({ researcherID }) => {
                 count += 1
             }
         }
-
         console.log(`Average Change in Torque: ${sum / count}`)
-
         let deltaTau = sum / count
-
         let deltaRadians = .0087266
         stiffness = deltaTau / deltaRadians
 
