@@ -409,13 +409,19 @@ const TestingScreen = ({ researcherID }) => {
         console.log(`Info array at the beginning of exporting ${infoArray}`)
         const dateArray = infoArray[1].split(" ")
 
+        let tmp = JSON.parse(await AsyncStorage.getItem(value))
+        let tmpData = tmp.data
+        let tmpSize = tmp.size
+
+        let torsionalStiffness = findStiffness(tmpData, angleArr)
+
         let data = [{
             "Tester Name": infoArray[3],
             "Date": dateArray[0],
             "Plant ID - Replicate Number": infoArray[0],
             "Planting Date": "",
             "Test Type": infoArray[4],
-            "Torsional Stiffness": "",
+            "Torsional Stiffness": torsionalStiffness,
             "Additional Notes": ""
         },
         {},
@@ -424,13 +430,6 @@ const TestingScreen = ({ researcherID }) => {
             "Date": "Force (N)",
             "Plant ID - Replicate Number": "Torque (N*m)"
         }];
-
-        let tmp = JSON.parse(await AsyncStorage.getItem(value))
-        // console.log(`Retrieved: ${tmp}`)
-        let tmpData = tmp.data
-        let tmpSize = tmp.size
-        // console.log(`Data exporting: ${tmpData}`)
-        // console.log(`Size Exporting: ${tmpSize}`)
 
         for (var i in tmpData) {
             let tmp_force = parseInt(tmpData[i]) * 9.81
@@ -441,10 +440,6 @@ const TestingScreen = ({ researcherID }) => {
                 "Plant ID - Replicate Number": torque.toString()
             }
             data.push(tmp);
-            console.log(`Test Data being added;
-                angle: ${angleArr[i]}
-                force: ${tmp_force}
-                torge: ${torque.toString()}`)
         }
 
         let ws = XLSX.utils.json_to_sheet(data);
@@ -468,6 +463,31 @@ const TestingScreen = ({ researcherID }) => {
             dialogTitle: "Data for Spreadsheets",
             UTI: 'com.microsoft.excel.xlsx'
         });
+    }
+
+    const findStiffness = (data, angles) => {
+        let stiffness = 0
+
+        let deltaTau = 0
+        let count = 0
+        let sum = 0
+
+        for (let i = 0; i < data.length; i++) {
+            if (i != data.length) {
+                sum += (data[i + 1] - data[i])
+                count += 1
+            }
+        }
+
+        console.log(`Average Change in Torque: ${sum / count}`)
+
+
+        let deltaRadians = .0087266
+
+
+
+
+        return stiffness
     }
 
     useEffect(() => {
