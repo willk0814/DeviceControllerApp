@@ -422,7 +422,7 @@ const TestingScreen = ({ researcherID }) => {
             "Plant ID - Replicate Number": infoArray[0],
             "Planting Date": "",
             "Test Type": infoArray[4],
-            "Torsional Stiffness": torsionalStiffness,
+            "Torsional Stiffness": torsionalStiffness.toString(),
             "Additional Notes": ""
         },
         {},
