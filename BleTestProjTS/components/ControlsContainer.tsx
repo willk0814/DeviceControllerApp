@@ -3,9 +3,9 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 
 export default function ControlsContainer({ isConnected, sendOperationCode, handleRequestSmallData, handleRequestLargeData, readyToTest, smurfSelected, retrievePusherData, calibrated, storedInitHeight }) {
 
-    console.log(`Ready to Test ${readyToTest}`)
-    console.log(`Stored Init Height ${storedInitHeight}`)
-    console.log(`From Controls Container, testing disabled? ${!(readyToTest && storedInitHeight)}`)
+    // console.log(`Ready to Test ${readyToTest}`)
+    // console.log(`Stored Init Height ${storedInitHeight}`)
+    // console.log(`From Controls Container, testing disabled? ${!(readyToTest && storedInitHeight)}`)
 
     return (
         <View style={styles.pageContainer}>

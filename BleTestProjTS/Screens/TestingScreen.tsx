@@ -436,7 +436,7 @@ const TestingScreen = ({ researcherID }) => {
             let torque = tmp_force * Math.sin(90 - angleArr[i]) * 0.15
             let tmp = {
                 "Tester Name": angleArr[i],
-                "Date": tmpData[i],
+                "Date": tmp_force.toString(),
                 "Plant ID - Replicate Number": torque.toString()
             }
             data.push(tmp);
@@ -468,7 +468,6 @@ const TestingScreen = ({ researcherID }) => {
     const findStiffness = (data, angles) => {
         let stiffness = 0
 
-        let deltaTau = 0
         let count = 0
         let sum = 0
 
@@ -481,11 +480,10 @@ const TestingScreen = ({ researcherID }) => {
 
         console.log(`Average Change in Torque: ${sum / count}`)
 
+        let deltaTau = sum / count
 
         let deltaRadians = .0087266
-
-
-
+        stiffness = deltaTau / deltaRadians
 
         return stiffness
     }
