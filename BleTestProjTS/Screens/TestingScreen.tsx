@@ -434,7 +434,7 @@ const TestingScreen = ({ researcherID }) => {
 
         for (var i in tmpData) {
             let tmp_force = parseFloat(tmpData[i]) * 9.81
-            let torque = tmp_force * Math.sin(90 - angleArr[i]) * 0.15
+            let torque = tmp_force * Math.sin(Math.PI / 2 - angleArr[i]) * 0.15
             let tmp = {
                 "Tester Name": angleArr[i],
                 "Date": tmp_force.toString(),
@@ -473,16 +473,20 @@ const TestingScreen = ({ researcherID }) => {
         let count = 0
         let sum = 0
 
-        for (let i = 0; i < data.length; i++) {
-            if (i != data.length) {
-                sum += (data[i + 1] - data[i])
+        for (let i = 0; i < data.length - 1; i++) {
+            if (i != data.length - 1) {
+                console.log(`Sum, count before adding: ${sum}, ${count}`)
+                sum += ((data[i + 1] * 9.81) - (data[i] * 9.81))
                 count += 1
+                console.log(`Sum, count after adding: ${sum}, ${count}`)
             }
         }
         console.log(`Average Change in Torque: ${sum / count}`)
+        console.log(`Sum and Count: ${sum} and ${count}`)
         let deltaTau = sum / count
         let deltaRadians = .0087266
         stiffness = deltaTau / deltaRadians
+        console.log(`Delta Tau, Delta Radians, and Stiffness: ${deltaTau}, ${deltaRadians}, ${stiffness}`)
 
         return stiffness
     }
