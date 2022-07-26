@@ -414,7 +414,7 @@ const TestingScreen = ({ researcherID }) => {
         let tmpData = tmp.data
         let tmpSize = tmp.size
 
-        let torsionalStiffness = findStiffness(tmpData, angleArr)
+        let torsionalStiffness = findStiffness(tmpData)
 
         let data = [{
             "Tester Name": infoArray[3],
