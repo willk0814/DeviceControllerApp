@@ -469,7 +469,7 @@ const TestingScreen = ({ researcherID }) => {
     const findStiffness = (data) => {
         console.log(`Finding Torsional stiffness for the following data: ${data}`)
 
-        let stiffness = 0
+        let stiffness = 0.0
         let count = 0
         let sum = 0
 
