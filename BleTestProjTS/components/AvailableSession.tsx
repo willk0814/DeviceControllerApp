@@ -145,9 +145,11 @@ const styles = StyleSheet.create({
     },
     downloadButton: {
         flex: 1,
+        borderLeftWidth: 10,
+        borderLeftColor: '#2E2F2F',
         marginRight: 10
     },
     buttonStyle: {
-        flex: 4
+        flex: 6,
     }
 })
