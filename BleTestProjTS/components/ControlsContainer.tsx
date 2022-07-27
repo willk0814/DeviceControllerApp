@@ -15,7 +15,8 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                     <View>
                         <TouchableOpacity
                             style={calibrated ? [styles.buttonStyle, { backgroundColor: 'red' }] : [styles.buttonStyle]}
-                            onPress={() => sendOperationCode("0")}>
+                            onPress={() => sendOperationCode("0")}
+                            disabled={!isConnected}>
                             <Text style={styles.buttonText}>Calibrate</Text>
                         </TouchableOpacity>
 
@@ -26,9 +27,9 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                         </TouchableOpacity> */}
 
                         <TouchableOpacity
-                            style={storedInitHeight ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
+                            style={!isConnected || storedInitHeight ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                             onPress={() => sendOperationCode("1")}
-                            disabled={storedInitHeight}>
+                            disabled={!isConnected || storedInitHeight}>
                             <Text style={styles.buttonText}>Get Initial Height</Text>
                         </TouchableOpacity>
 
