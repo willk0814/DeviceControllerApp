@@ -1,10 +1,10 @@
 import React from 'react'
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { LineChart } from 'react-native-chart-kit'
 
 const screenWidth = Dimensions.get('window').width * .90
 
-export default function OutputContainer({ isConnected, currentTest, handleAccept, handleReject, readyToAccept, movePlant, readyToMove }) {
+export default function OutputContainer({ isConnected, currentTest, handleAccept, handleReject, readyToAccept, movePlant, readyToMove, isMovingToHome }) {
     let xLargeLabels = ["2.0", "2.5", "3.0", "3.5", "4.0", "4.5", "5.0", "5.5"]
     let xSmallLables = ["2.0", "2.5", "3.0", "3.5"]
     let xLabels = []
@@ -71,8 +71,10 @@ export default function OutputContainer({ isConnected, currentTest, handleAccept
                                 style={!readyToMove ? [styles.buttonStyle, { width: 650 }, styles.disabledButton] : [styles.buttonStyle, { width: 650 }]}
                                 onPress={movePlant}
                                 disabled={!readyToMove}>
-                                <Text style={styles.buttonText}>Move to Next Plant</Text>
 
+                                {isMovingToHome ?
+                                    (<ActivityIndicator />) :
+                                    (<Text style={styles.buttonText}>Move to Next Plant</Text>)}
                             </TouchableOpacity>
                         </View>
                     </View>

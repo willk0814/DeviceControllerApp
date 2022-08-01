@@ -90,6 +90,11 @@ const TestingScreen = ({ researcherID }) => {
     const [storedInitHeight, setStoredInitHeight] = useState(false)
     const [readyToAccept, setReadyToAccept] = useState(false)
 
+    // SVs for acvitivity indicator logic
+    const [isCalibrating, setIsCalibrating] = useState(false)
+    const [isGettingHeight, setIsGettingHeight] = useState(false)
+    const [isMovingToHome, setIsMovingToHome] = useState(false)
+
     const scanDevices = () => {
         setIsLoading(true)
         console.log('Scanning for Devices')
@@ -177,10 +182,22 @@ const TestingScreen = ({ researcherID }) => {
         if (operationCode == "0") {
             setCalibrated(true)
             setStoredInitHeight(false)
+            setIsCalibrating(true)
+            setTimeout(() => {
+                setIsCalibrating(false)
+            }, 14000)
         } else if (operationCode == "1") {
             setStoredInitHeight(true)
+            setIsGettingHeight(true)
+            setTimeout(() => {
+                setIsGettingHeight(false)
+            }, 14000)
         } else if (operationCode == "2") {
             setStoredInitHeight(true)
+            setIsMovingToHome(true)
+            setTimeout(() => {
+                setIsMovingToHome(false)
+            }, 14000)
         } else if (operationCode == "8") {
             setReadyToRun(false)
             setTimeout(() => {
@@ -538,7 +555,9 @@ const TestingScreen = ({ researcherID }) => {
                 smurfSelected={smurfSelected}
                 retrievePusherData={retrievePusherData}
                 calibrated={calibrated}
-                storedInitHeight={storedInitHeight} />
+                storedInitHeight={storedInitHeight}
+                isCalibrating={isCalibrating}
+                isGettingHeight={isGettingHeight} />
             <OutputContainer
                 isConnected={connected}
                 currentTest={currentTestData}
@@ -546,7 +565,8 @@ const TestingScreen = ({ researcherID }) => {
                 handleReject={handleReject}
                 readyToAccept={readyToAccept}
                 movePlant={handleMovePlant}
-                readyToMove={readyToMove} />
+                readyToMove={readyToMove}
+                isMovingToHome={isMovingToHome} />
         </View>
     )
 }

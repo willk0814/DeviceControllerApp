@@ -1,7 +1,7 @@
 import React from 'react'
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native'
 
-export default function ControlsContainer({ isConnected, sendOperationCode, handleRequestSmallData, handleRequestLargeData, readyToTest, smurfSelected, retrievePusherData, calibrated, storedInitHeight }) {
+export default function ControlsContainer({ isConnected, sendOperationCode, handleRequestSmallData, handleRequestLargeData, readyToTest, smurfSelected, retrievePusherData, calibrated, storedInitHeight, isCalibrating, isGettingHeight }) {
 
     // console.log(`Ready to Test ${readyToTest}`)
     // console.log(`Stored Init Height ${storedInitHeight}`)
@@ -17,7 +17,12 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                             style={calibrated ? [styles.buttonStyle, { backgroundColor: 'red' }] : [styles.buttonStyle]}
                             onPress={() => sendOperationCode("0")}
                             disabled={!isConnected}>
-                            <Text style={styles.buttonText}>Calibrate</Text>
+
+                            {isCalibrating ?
+                                (<ActivityIndicator />) :
+                                (<Text style={styles.buttonText}>Calibrate</Text>)}
+
+
                         </TouchableOpacity>
 
                         {/* <TouchableOpacity
@@ -30,7 +35,9 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                             style={!isConnected || storedInitHeight ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                             onPress={() => sendOperationCode("1")}
                             disabled={!isConnected || storedInitHeight}>
-                            <Text style={styles.buttonText}>Get Initial Height</Text>
+                            {isGettingHeight ?
+                                (<ActivityIndicator />) :
+                                (<Text style={styles.buttonText}>Get Init Height</Text>)}
                         </TouchableOpacity>
 
                         <TouchableOpacity
@@ -57,7 +64,7 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                         </TouchableOpacity>
                     )
             }
-        </View>
+        </View >
     )
 }
 
