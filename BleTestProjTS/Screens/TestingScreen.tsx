@@ -206,7 +206,13 @@ const TestingScreen = ({ researcherID }) => {
                 setRunningCommand(false)
             }, 14000)
         } else if (operationCode == "2") {
-            setStoredInitHeight(true)
+            // A very hacky fix
+            await connectedDeviceObj.writeCharacteristicWithResponseForService(
+                SMURF_COMM_SERVICE_UUID,
+                CMD_CHAR_UUID,
+                base64.encode("2")
+            )
+            setStoredInitHeight(false)
             setIsMovingToHome(true)
             setRunningCommand(true)
             setTimeout(() => {
