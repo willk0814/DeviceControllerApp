@@ -58,11 +58,11 @@ const TestingScreen = ({ researcherID }) => {
     const [scannedDevices, dispatch] = useReducer(reducer, [])
 
     // Device Connection SV's
-    const [connected, setConnected] = useState(false)
+    const [connected, setConnected] = useState(true)
     const [connectedDevice, setConnectedDevice] = useState()
     const [connectedDeviceObj, setConnectedDeviceObj] = useState<Device>()
     const [desiredDevice, setDesiredDevice] = useState<Device>()
-    const [connectedDeviceName, setConnectedDeviceName] = useState('')
+    const [connectedDeviceName, setConnectedDeviceName] = useState('Connected Device')
 
     // SV's connected Device Services and Characteristics
     const [services, setServices] = useState<Service[]>([])
@@ -91,7 +91,7 @@ const TestingScreen = ({ researcherID }) => {
     const [readyToAccept, setReadyToAccept] = useState(false)
     const [runningCommand, setRunningCommand] = useState(false)
 
-    // SVs for acvitivity indicator logic
+    // SVs for Progress Bar logic
     const [isCalibrating, setIsCalibrating] = useState(false)
     const [calibrateStatus, setCalibrateStatus] = useState(0)
 
@@ -183,11 +183,11 @@ const TestingScreen = ({ researcherID }) => {
     // function to send a number 0 - 8 to the SMURF in order to execute the corresponding characteristic
     const sendOperationCode = async (operationCode: string) => {
         console.log(`Sending operation Code: ${operationCode}`)
-        await connectedDeviceObj.writeCharacteristicWithResponseForService(
-            SMURF_COMM_SERVICE_UUID,
-            CMD_CHAR_UUID,
-            base64.encode(operationCode)
-        )
+        // await connectedDeviceObj.writeCharacteristicWithResponseForService(
+        //     SMURF_COMM_SERVICE_UUID,
+        //     CMD_CHAR_UUID,
+        //     base64.encode(operationCode)
+        // )
 
         if (operationCode == "0") {
             setIsCalibrating(true)
@@ -235,15 +235,15 @@ const TestingScreen = ({ researcherID }) => {
     // The below to functions have a test written in that creates random input rather than pulling from the connected Device, toggle the comments to change the input source
     const readSmallData = async () => {
         // ### COMMENT THIS IN TO READ FROM DEVICE ###
-        const data = await connectedDeviceObj.readCharacteristicForService(
-            SMURF_COMM_SERVICE_UUID,
-            SMURF_DATA_CHAR_1_UUID)
+        // const data = await connectedDeviceObj.readCharacteristicForService(
+        //     SMURF_COMM_SERVICE_UUID,
+        //     SMURF_DATA_CHAR_1_UUID)
 
-        let final_data = base64.decode(data.value).split(",")
+        // let final_data = base64.decode(data.value).split(",")
         // #######
 
         // ### COMMENT THIS OUT ###
-        // const final_data = generateTestString('small').split(',')
+        const final_data = generateTestString('small').split(',')
         // ######
         parseData(final_data, 'small')
         setReadyToAccept(true)

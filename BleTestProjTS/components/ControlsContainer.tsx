@@ -1,6 +1,7 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native'
-import { ProgressBar } from 'react-native-paper'
+
+import ProgressBarContainer from '../components/ProgressBarContainer'
 
 export default function ControlsContainer({ isConnected, sendOperationCode, handleRequestSmallData, handleRequestLargeData, readyToTest, smurfSelected, retrievePusherData, calibrated, storedInitHeight, isCalibrating, calibrateStatus, isGettingHeight, runningCommand }) {
 
@@ -18,8 +19,8 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                             disabled={!isConnected || runningCommand}>
 
                             {isCalibrating ?
-                                (<ActivityIndicator />) :
-                                (<Text style={styles.buttonText}>Calibrate</Text>)}
+                                (<ProgressBarContainer denomTime={14} />) :
+                                (<Text style={styles.buttonText}>Fully Retract Foot</Text>)}
 
 
                         </TouchableOpacity>
@@ -35,7 +36,7 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                             onPress={() => sendOperationCode("1")}
                             disabled={!isConnected || storedInitHeight || runningCommand}>
                             {isGettingHeight ?
-                                (<ActivityIndicator />) :
+                                (<ProgressBarContainer denomTime={14} />) :
                                 (<Text style={styles.buttonText}>Get Init Height</Text>)}
                         </TouchableOpacity>
 

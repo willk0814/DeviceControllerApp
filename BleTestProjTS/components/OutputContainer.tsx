@@ -2,6 +2,8 @@ import React from 'react'
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native'
 import { LineChart } from 'react-native-chart-kit'
 
+import ProgressBarContainer from '../components/ProgressBarContainer'
+
 const screenWidth = Dimensions.get('window').width * .90
 
 export default function OutputContainer({ isConnected, currentTest, handleAccept, handleReject, readyToAccept, movePlant, readyToMove, isMovingToHome, runningCommand }) {
@@ -74,7 +76,7 @@ export default function OutputContainer({ isConnected, currentTest, handleAccept
                                 disabled={!readyToMove || runningCommand}>
 
                                 {isMovingToHome ?
-                                    (<ActivityIndicator />) :
+                                    (<ProgressBarContainer denomTime={14} />) :
                                     (<Text style={styles.buttonText}>Move to Next Plant</Text>)}
                             </TouchableOpacity>
                         </View>
