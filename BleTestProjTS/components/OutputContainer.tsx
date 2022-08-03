@@ -114,6 +114,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 5,
         margin: 15,
+        paddingVertical: 10,
         width: 310
     },
     rejectButton: {

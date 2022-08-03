@@ -3,9 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'rea
 
 import ProgressBarContainer from '../components/ProgressBarContainer'
 
-export default function ControlsContainer({ isConnected, sendOperationCode, handleRequestSmallData, handleRequestLargeData, readyToTest, smurfSelected, retrievePusherData, calibrated, storedInitHeight, isCalibrating, calibrateStatus, isGettingHeight, runningCommand }) {
-
-    console.log(`Running Command: ${runningCommand}`)
+export default function ControlsContainer({ isConnected, sendOperationCode, handleRequestSmallData, handleRequestLargeData, readyToTest, smurfSelected, retrievePusherData, calibrated, storedInitHeight, isCalibrating, calibrateStatus, isGettingHeight, runningCommand, runningSmallTest, runningLargeTest }) {
 
     return (
         <View style={styles.pageContainer}>
@@ -44,14 +42,18 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                             style={!(readyToTest && storedInitHeight) ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                             onPress={() => sendOperationCode("8")}
                             disabled={!(readyToTest && storedInitHeight)}>
-                            <Text style={styles.buttonText}>Small Flex Test</Text>
+                            {runningSmallTest ?
+                                (<ProgressBarContainer denomTime={11} />) :
+                                (<Text style={styles.buttonText}>Small Flex Test</Text>)}
                         </TouchableOpacity>
 
                         <TouchableOpacity
                             style={!(readyToTest && storedInitHeight) ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                             onPress={() => sendOperationCode("9")}
                             disabled={!(readyToTest && storedInitHeight)}>
-                            <Text style={styles.buttonText}>Large Flex Test</Text>
+                            {runningLargeTest ?
+                                (<ProgressBarContainer denomTime={17} />) :
+                                (<Text style={styles.buttonText}>Large Flex Test</Text>)}
                         </TouchableOpacity>
 
                     </View>
@@ -85,7 +87,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#315a2a',
         margin: 10,
         padding: 5,
-        borderRadius: 5,
+        borderRadius: 10,
         paddingVertical: 10,
         width: 650
 
