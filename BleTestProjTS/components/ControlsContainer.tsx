@@ -1,11 +1,10 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { ProgressBar } from 'react-native-paper'
 
-export default function ControlsContainer({ isConnected, sendOperationCode, handleRequestSmallData, handleRequestLargeData, readyToTest, smurfSelected, retrievePusherData, calibrated, storedInitHeight, isCalibrating, isGettingHeight }) {
+export default function ControlsContainer({ isConnected, sendOperationCode, handleRequestSmallData, handleRequestLargeData, readyToTest, smurfSelected, retrievePusherData, calibrated, storedInitHeight, isCalibrating, calibrateStatus, isGettingHeight, runningCommand }) {
 
-    // console.log(`Ready to Test ${readyToTest}`)
-    // console.log(`Stored Init Height ${storedInitHeight}`)
-    // console.log(`From Controls Container, testing disabled? ${!(readyToTest && storedInitHeight)}`)
+    console.log(`Running Command: ${runningCommand}`)
 
     return (
         <View style={styles.pageContainer}>
@@ -16,7 +15,7 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                         <TouchableOpacity
                             style={calibrated ? [styles.buttonStyle, { backgroundColor: 'red' }] : [styles.buttonStyle]}
                             onPress={() => sendOperationCode("0")}
-                            disabled={!isConnected}>
+                            disabled={!isConnected || runningCommand}>
 
                             {isCalibrating ?
                                 (<ActivityIndicator />) :
@@ -32,9 +31,9 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                         </TouchableOpacity> */}
 
                         <TouchableOpacity
-                            style={!isConnected || storedInitHeight ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
+                            style={!isConnected || storedInitHeight || runningCommand ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                             onPress={() => sendOperationCode("1")}
-                            disabled={!isConnected || storedInitHeight}>
+                            disabled={!isConnected || storedInitHeight || runningCommand}>
                             {isGettingHeight ?
                                 (<ActivityIndicator />) :
                                 (<Text style={styles.buttonText}>Get Init Height</Text>)}

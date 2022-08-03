@@ -89,11 +89,17 @@ const TestingScreen = ({ researcherID }) => {
     const [calibrated, setCalibrated] = useState(false)
     const [storedInitHeight, setStoredInitHeight] = useState(false)
     const [readyToAccept, setReadyToAccept] = useState(false)
+    const [runningCommand, setRunningCommand] = useState(false)
 
     // SVs for acvitivity indicator logic
     const [isCalibrating, setIsCalibrating] = useState(false)
+    const [calibrateStatus, setCalibrateStatus] = useState(0)
+
     const [isGettingHeight, setIsGettingHeight] = useState(false)
+    const [gettingHeightStatus, setGettingHeightStatus] = useState()
+
     const [isMovingToHome, setIsMovingToHome] = useState(false)
+    const [movingHomeStatus, setMovingHomeStatus] = useState(0)
 
     const scanDevices = () => {
         setIsLoading(true)
@@ -170,6 +176,10 @@ const TestingScreen = ({ researcherID }) => {
 
     }
 
+    const updateProgressValue = () => {
+
+    }
+
     // function to send a number 0 - 8 to the SMURF in order to execute the corresponding characteristic
     const sendOperationCode = async (operationCode: string) => {
         console.log(`Sending operation Code: ${operationCode}`)
@@ -180,32 +190,42 @@ const TestingScreen = ({ researcherID }) => {
         )
 
         if (operationCode == "0") {
-            setCalibrated(true)
-            setStoredInitHeight(false)
             setIsCalibrating(true)
+            setRunningCommand(true)
             setTimeout(() => {
                 setIsCalibrating(false)
+                setCalibrated(true)
+                setStoredInitHeight(false)
+                setRunningCommand(false)
             }, 14000)
         } else if (operationCode == "1") {
-            setStoredInitHeight(true)
             setIsGettingHeight(true)
+            setRunningCommand(true)
             setTimeout(() => {
+                setStoredInitHeight(true)
                 setIsGettingHeight(false)
+                setRunningCommand(false)
             }, 14000)
         } else if (operationCode == "2") {
             setStoredInitHeight(true)
             setIsMovingToHome(true)
+            setRunningCommand(true)
             setTimeout(() => {
+                setRunningCommand(false)
                 setIsMovingToHome(false)
             }, 14000)
         } else if (operationCode == "8") {
             setReadyToRun(false)
+            setRunningCommand(true)
             setTimeout(() => {
                 readSmallData()
+                setRunningCommand(false)
             }, 11000)
         } else if (operationCode == "9") {
             setReadyToRun(false)
+            setRunningCommand(true)
             setTimeout(() => {
+                setRunningCommand(false)
                 readLargeData()
             }, 17000)
         }
@@ -330,7 +350,7 @@ const TestingScreen = ({ researcherID }) => {
         let hours = String(date.getHours()).padStart(2, '0');;
         let min = String(date.getMinutes()).padStart(2, '0');;
         let sec = String(date.getSeconds()).padStart(2, '0');;
-        let dateVal = `${month}/${day}/${year} ${hours}:${min}:${sec}`;
+        let dateVal = `${month} / ${day} / ${year} ${hours}: ${min}: ${sec}`;
         return dateVal
     }
 
@@ -471,7 +491,7 @@ const TestingScreen = ({ researcherID }) => {
 
         const fileName = infoArray[0] + '_' + dateArray[0].replaceAll('/', '_') + '_' + dateArray[1].replaceAll(':', '_') + '.xlsx'
         const uri = FileSystem.cacheDirectory + fileName.replace(' ', '_');
-        console.log(`Writing to ${JSON.stringify(uri)} with text: ${wbout}`);
+        console.log(`Writing to ${JSON.stringify(uri)} with text: ${wbout} `);
         await FileSystem.writeAsStringAsync(uri, wbout, {
             encoding: FileSystem.EncodingType.Base64
         });
@@ -484,7 +504,7 @@ const TestingScreen = ({ researcherID }) => {
     }
 
     const findStiffness = (data) => {
-        console.log(`Finding Torsional stiffness for the following data: ${data}`)
+        console.log(`Finding Torsional stiffness for the following data: ${data} `)
 
         let stiffness = 0.0
         let count = 0
@@ -492,18 +512,18 @@ const TestingScreen = ({ researcherID }) => {
 
         for (let i = 0; i < data.length - 1; i++) {
             if (i != data.length - 1) {
-                console.log(`Sum, count before adding: ${sum}, ${count}`)
+                console.log(`Sum, count before adding: ${sum}, ${count} `)
                 sum += ((data[i + 1] * 9.81) - (data[i] * 9.81))
                 count += 1
-                console.log(`Sum, count after adding: ${sum}, ${count}`)
+                console.log(`Sum, count after adding: ${sum}, ${count} `)
             }
         }
-        console.log(`Average Change in Torque: ${sum / count}`)
-        console.log(`Sum and Count: ${sum} and ${count}`)
+        console.log(`Average Change in Torque: ${sum / count} `)
+        console.log(`Sum and Count: ${sum} and ${count} `)
         let deltaTau = sum / count
         let deltaRadians = .0087266
         stiffness = deltaTau / deltaRadians
-        console.log(`Delta Tau, Delta Radians, and Stiffness: ${deltaTau}, ${deltaRadians}, ${stiffness}`)
+        console.log(`Delta Tau, Delta Radians, and Stiffness: ${deltaTau}, ${deltaRadians}, ${stiffness} `)
 
         return stiffness
     }
@@ -557,7 +577,9 @@ const TestingScreen = ({ researcherID }) => {
                 calibrated={calibrated}
                 storedInitHeight={storedInitHeight}
                 isCalibrating={isCalibrating}
-                isGettingHeight={isGettingHeight} />
+                calibrateStatus={calibrateStatus}
+                isGettingHeight={isGettingHeight}
+                runningCommand={runningCommand} />
             <OutputContainer
                 isConnected={connected}
                 currentTest={currentTestData}
@@ -566,7 +588,8 @@ const TestingScreen = ({ researcherID }) => {
                 readyToAccept={readyToAccept}
                 movePlant={handleMovePlant}
                 readyToMove={readyToMove}
-                isMovingToHome={isMovingToHome} />
+                isMovingToHome={isMovingToHome}
+                runningCommand={runningCommand} />
         </View>
     )
 }
