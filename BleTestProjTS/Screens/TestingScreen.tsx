@@ -58,11 +58,11 @@ const TestingScreen = ({ researcherID }) => {
     const [scannedDevices, dispatch] = useReducer(reducer, [])
 
     // Device Connection SV's
-    const [connected, setConnected] = useState(false)
+    const [connected, setConnected] = useState(true)
     const [connectedDevice, setConnectedDevice] = useState()
     const [connectedDeviceObj, setConnectedDeviceObj] = useState<Device>()
     const [desiredDevice, setDesiredDevice] = useState<Device>()
-    const [connectedDeviceName, setConnectedDeviceName] = useState('')
+    const [connectedDeviceName, setConnectedDeviceName] = useState('Device')
 
     // SV's connected Device Services and Characteristics
     const [services, setServices] = useState<Service[]>([])
@@ -182,11 +182,11 @@ const TestingScreen = ({ researcherID }) => {
     // function to send a number 0 - 8 to the SMURF in order to execute the corresponding characteristic
     const sendOperationCode = async (operationCode: string) => {
         console.log(`Sending operation Code: ${operationCode}`)
-        await connectedDeviceObj.writeCharacteristicWithResponseForService(
-            SMURF_COMM_SERVICE_UUID,
-            CMD_CHAR_UUID,
-            base64.encode(operationCode)
-        )
+        // await connectedDeviceObj.writeCharacteristicWithResponseForService(
+        //     SMURF_COMM_SERVICE_UUID,
+        //     CMD_CHAR_UUID,
+        //     base64.encode(operationCode)
+        // )
 
         if (operationCode == "0") {
             setIsCalibrating(true)
@@ -246,15 +246,15 @@ const TestingScreen = ({ researcherID }) => {
     // The below to functions have a test written in that creates random input rather than pulling from the connected Device, toggle the comments to change the input source
     const readSmallData = async () => {
         // ### COMMENT THIS IN TO READ FROM DEVICE ###
-        const data = await connectedDeviceObj.readCharacteristicForService(
-            SMURF_COMM_SERVICE_UUID,
-            SMURF_DATA_CHAR_1_UUID)
+        // const data = await connectedDeviceObj.readCharacteristicForService(
+        //     SMURF_COMM_SERVICE_UUID,
+        //     SMURF_DATA_CHAR_1_UUID)
 
-        let final_data = base64.decode(data.value).split(",")
+        // let final_data = base64.decode(data.value).split(",")
         // #######
 
         // ### COMMENT THIS OUT ###
-        // const final_data = generateTestString('small').split(',')
+        const final_data = generateTestString('small').split(',')
         // ######
         parseData(final_data, 'small')
         setReadyToAccept(true)
@@ -262,27 +262,27 @@ const TestingScreen = ({ researcherID }) => {
 
     const readLargeData = async () => {
         // ### COMMENT THIS IN TO READ FROM DEVICE ###
-        const data_1 = await connectedDeviceObj.readCharacteristicForService(
-            SMURF_COMM_SERVICE_UUID, SMURF_DATA_CHAR_1_UUID)
-        const data_2 = await connectedDeviceObj.readCharacteristicForService(
-            SMURF_COMM_SERVICE_UUID, SMURF_DATA_CHAR_2_UUID)
+        // const data_1 = await connectedDeviceObj.readCharacteristicForService(
+        //     SMURF_COMM_SERVICE_UUID, SMURF_DATA_CHAR_1_UUID)
+        // const data_2 = await connectedDeviceObj.readCharacteristicForService(
+        //     SMURF_COMM_SERVICE_UUID, SMURF_DATA_CHAR_2_UUID)
 
-        let tmp_data_1 = base64.decode(data_1.value).split(",")
-        // console.log(`Data Char 1 len: ${tmp_data_1.length}`)
-        if (tmp_data_1.length == 5) {
-            tmp_data_1.pop()
-        }
-        // console.log(`Adjusted length: ${tmp_data_1.length}`)
-        // console.log(`Data Char 1: ${tmp_data_1}`)
-        let tmp_data_2 = base64.decode(data_2.value).split(",")
-        // console.log(`Data Char 2: ${tmp_data_2}`)
+        // let tmp_data_1 = base64.decode(data_1.value).split(",")
+        // // console.log(`Data Char 1 len: ${tmp_data_1.length}`)
+        // if (tmp_data_1.length == 5) {
+        //     tmp_data_1.pop()
+        // }
+        // // console.log(`Adjusted length: ${tmp_data_1.length}`)
+        // // console.log(`Data Char 1: ${tmp_data_1}`)
+        // let tmp_data_2 = base64.decode(data_2.value).split(",")
+        // // console.log(`Data Char 2: ${tmp_data_2}`)
 
-        const final_data = tmp_data_1.concat(tmp_data_2)
-        console.log(`Large Flex Test Data: ${final_data}`)
+        // const final_data = tmp_data_1.concat(tmp_data_2)
+        // console.log(`Large Flex Test Data: ${final_data}`)
 
         // #######
         // ### COMMENT THIS OUT ###
-        // const final_data = generateTestString('large').split(",")
+        const final_data = generateTestString('large').split(",")
         // ######
         parseData(final_data, 'large')
         setReadyToAccept(true)
@@ -361,7 +361,7 @@ const TestingScreen = ({ researcherID }) => {
         let hours = String(date.getHours()).padStart(2, '0');;
         let min = String(date.getMinutes()).padStart(2, '0');;
         let sec = String(date.getSeconds()).padStart(2, '0');;
-        let dateVal = `${month} / ${day} / ${year} ${hours}: ${min}: ${sec}`;
+        let dateVal = `${month}/${day}/${year} ${hours}:${min}:${sec}`;
         return dateVal
     }
 
@@ -410,6 +410,7 @@ const TestingScreen = ({ researcherID }) => {
         let tmpSessions = JSON.stringify(currentSessions)
         storeData('sessions', tmpSessions)
         storeData(key, JSON.stringify(currentTestData))
+        // console.log(`key: ${key}`)
         exportExcel(key)
         setCurrentTestData({ size: 'small', data: [0, 0, 0, 0] })
         setReadyToAccept(false)
@@ -455,7 +456,6 @@ const TestingScreen = ({ researcherID }) => {
     const exportExcel = async (value) => {
         let angleArr = [2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0, 5.5]
         const infoArray = value.split("$")
-        console.log(`Info array at the beginning of exporting ${infoArray}`)
         const dateArray = infoArray[1].split(" ")
 
         let tmp = JSON.parse(await AsyncStorage.getItem(value))
@@ -499,10 +499,8 @@ const TestingScreen = ({ researcherID }) => {
             type: 'base64',
             bookType: "xlsx"
         });
-
         const fileName = infoArray[0] + '_' + dateArray[0].replaceAll('/', '_') + '_' + dateArray[1].replaceAll(':', '_') + '.xlsx'
         const uri = FileSystem.cacheDirectory + fileName.replace(' ', '_');
-        console.log(`Writing to ${JSON.stringify(uri)} with text: ${wbout} `);
         await FileSystem.writeAsStringAsync(uri, wbout, {
             encoding: FileSystem.EncodingType.Base64
         });
@@ -515,7 +513,7 @@ const TestingScreen = ({ researcherID }) => {
     }
 
     const findStiffness = (data) => {
-        console.log(`Finding Torsional stiffness for the following data: ${data} `)
+        // console.log(`Finding Torsional stiffness for the following data: ${data} `)
 
         let stiffness = 0.0
         let count = 0
@@ -523,18 +521,18 @@ const TestingScreen = ({ researcherID }) => {
 
         for (let i = 0; i < data.length - 1; i++) {
             if (i != data.length - 1) {
-                console.log(`Sum, count before adding: ${sum}, ${count} `)
+                // console.log(`Sum, count before adding: ${sum}, ${count} `)
                 sum += ((data[i + 1] * 9.81) - (data[i] * 9.81))
                 count += 1
-                console.log(`Sum, count after adding: ${sum}, ${count} `)
+                // console.log(`Sum, count after adding: ${sum}, ${count} `)
             }
         }
-        console.log(`Average Change in Torque: ${sum / count} `)
-        console.log(`Sum and Count: ${sum} and ${count} `)
+        // console.log(`Average Change in Torque: ${sum / count} `)
+        // console.log(`Sum and Count: ${sum} and ${count} `)
         let deltaTau = sum / count
         let deltaRadians = .0087266
         stiffness = deltaTau / deltaRadians
-        console.log(`Delta Tau, Delta Radians, and Stiffness: ${deltaTau}, ${deltaRadians}, ${stiffness} `)
+        // console.log(`Delta Tau, Delta Radians, and Stiffness: ${deltaTau}, ${deltaRadians}, ${stiffness} `)
 
         return stiffness
     }
