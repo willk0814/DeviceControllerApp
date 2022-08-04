@@ -10,7 +10,7 @@ import { Dimensions } from "react-native";
 const screenWidth = Dimensions.get("window").width * .90;
 
 
-export default function AvailableSession({ keyVal, testData, testSize, exportExcel }) {
+export default function AvailableSession({ keyVal, testData, testSize, exportExcel, key }) {
 
     const [showGraph, setShowGraph] = useState(false)
 
