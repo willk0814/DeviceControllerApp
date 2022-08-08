@@ -17,7 +17,7 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                             style={calibrated ? [styles.buttonStyle, { backgroundColor: 'red' }] : [styles.buttonStyle]}
                             onPress={() => sendOperationCode("0")}
                             disabled={!isConnected}>
-                            <Text style={styles.buttonText}>Calibrate</Text>
+                            <Text style={styles.buttonText}>Fully Retract Foot</Text>
                         </TouchableOpacity>
 
                         {/* <TouchableOpacity

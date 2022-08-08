@@ -161,7 +161,13 @@ export default function LogsScreen() {
                     horizontal={false}
                     showsVerticalScrollIndicator={true}>
 
-                    {Object.entries(dataDict).map(([key, value]) => <AvailableSession keyVal={key} testData={value[0]} testSize={value[1]} exportExcel={exportExcel} />)}
+                    {Object.entries(dataDict).map(([key, value]) =>
+                        <AvailableSession
+                            keyVal={key}
+                            testData={value[0]}
+                            testSize={value[1]}
+                            exportExcel={exportExcel}
+                            key={key} />)}
 
                 </ScrollView>
             ) : (
