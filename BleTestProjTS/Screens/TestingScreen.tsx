@@ -58,11 +58,11 @@ const TestingScreen = ({ researcherID }) => {
     const [scannedDevices, dispatch] = useReducer(reducer, [])
 
     // Device Connection SV's
-    const [connected, setConnected] = useState(false)
+    const [connected, setConnected] = useState(true)
     const [connectedDevice, setConnectedDevice] = useState()
     const [connectedDeviceObj, setConnectedDeviceObj] = useState<Device>()
     const [desiredDevice, setDesiredDevice] = useState<Device>()
-    const [connectedDeviceName, setConnectedDeviceName] = useState('')
+    const [connectedDeviceName, setConnectedDeviceName] = useState('Device')
 
     // SV's connected Device Services and Characteristics
     const [services, setServices] = useState<Service[]>([])
@@ -168,11 +168,11 @@ const TestingScreen = ({ researcherID }) => {
     // function to send a number 0 - 8 to the SMURF in order to execute the corresponding characteristic
     const sendOperationCode = async (operationCode: string) => {
         console.log(`Sending operation Code: ${operationCode}`)
-        await connectedDeviceObj.writeCharacteristicWithResponseForService(
-            SMURF_COMM_SERVICE_UUID,
-            CMD_CHAR_UUID,
-            base64.encode(operationCode)
-        )
+        // await connectedDeviceObj.writeCharacteristicWithResponseForService(
+        //     SMURF_COMM_SERVICE_UUID,
+        //     CMD_CHAR_UUID,
+        //     base64.encode(operationCode)
+        // )
 
         if (operationCode == "0") {
             setCalibrated(true)
@@ -180,7 +180,7 @@ const TestingScreen = ({ researcherID }) => {
         } else if (operationCode == "1") {
             setStoredInitHeight(true)
         } else if (operationCode == "2") {
-            setStoredInitHeight(true)
+
         } else if (operationCode == "8") {
             setReadyToRun(false)
             setTimeout(() => {

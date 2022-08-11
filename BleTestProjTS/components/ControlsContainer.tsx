@@ -29,7 +29,7 @@ export default function ControlsContainer({ isConnected, sendOperationCode, hand
                         <TouchableOpacity
                             style={!isConnected || storedInitHeight ? [styles.buttonStyle, styles.disabledButton] : styles.buttonStyle}
                             onPress={() => sendOperationCode("1")}
-                            disabled={storedInitHeight}>
+                            disabled={!isConnected || storedInitHeight}>
                             <Text style={styles.buttonText}>Get Initial Height</Text>
                         </TouchableOpacity>
 
