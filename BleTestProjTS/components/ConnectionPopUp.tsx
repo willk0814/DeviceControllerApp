@@ -76,7 +76,7 @@ export default function ConnectionPopUp({ scannedDevices, scanDevices, selectDev
                 </View>
 
                 <TouchableOpacity
-                    style={[styles.buttonStyle, { width: 500 }]}
+                    style={[styles.buttonStyle, { width: "81.5%" }]} // 500
                     onPress={handleHideConnectionPopUp}>
                     <Text style={styles.buttonText}>Hide Pop Up</Text>
                 </TouchableOpacity>
@@ -90,20 +90,22 @@ export default function ConnectionPopUp({ scannedDevices, scanDevices, selectDev
 
 const styles = StyleSheet.create({
     pageContainer: {
+        maxWidth: "85%",
         backgroundColor: 'black',
         borderRadius: 10,
         padding: 5,
         alignItems: 'center'
     },
     rowStyle: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        alignSelf: "center"
     },
     buttonStyle: {
         backgroundColor: '#315a2a',
         borderRadius: 10,
         margin: 5,
-        width: 250,
-        paddingHorizontal: 25
+        width: "40%", // 250
+        paddingHorizontal: 25, // 25
     },
     redButton: {
         backgroundColor: 'red'
@@ -126,7 +128,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'grey'
     },
     pageBreak: {
-        width: '98%',
+        width: '81.5%', // 98%
         marginVertical: 5,
         backgroundColor: '#cddddd',
         height: 10,

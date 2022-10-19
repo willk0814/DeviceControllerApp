@@ -523,6 +523,7 @@
 				DEVELOPMENT_TEAM = 7Q9MN42JCM;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = BleTestProjTS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -551,6 +552,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 7Q9MN42JCM;
 				INFOPLIST_FILE = BleTestProjTS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
