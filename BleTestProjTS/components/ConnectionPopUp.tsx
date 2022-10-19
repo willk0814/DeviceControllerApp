@@ -1,7 +1,8 @@
 import React from 'react'
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, ViewBase } from 'react-native'
 import DeviceCard from '../components/DeviceCard'
 import { Device } from 'react-native-ble-plx'
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default function ConnectionPopUp({ scannedDevices, scanDevices, selectDevice, desiredDevice, clearScannedDevices, handleConnect, handleDisconnect, handleHideConnectionPopUp, isConnected, connectedDevice, smurfSelected, selectSMURF, selectPUSHER }) {
     return (
@@ -90,10 +91,11 @@ export default function ConnectionPopUp({ scannedDevices, scanDevices, selectDev
 
 const styles = StyleSheet.create({
     pageContainer: {
-        maxWidth: "85%",
+        maxWidth: "95%", // 85%,
+        maxHeight: 500,
         backgroundColor: 'black',
         borderRadius: 10,
-        padding: 5,
+        padding: 0, // 5
         alignItems: 'center'
     },
     rowStyle: {
@@ -104,16 +106,17 @@ const styles = StyleSheet.create({
         backgroundColor: '#315a2a',
         borderRadius: 10,
         margin: 5,
-        width: "40%", // 250
-        paddingHorizontal: 25, // 25
+        width: "40%", // 250,
+        paddingHorizontal: 0, // 25
     },
     redButton: {
         backgroundColor: 'red'
     },
     buttonText: {
         color: '#cddddd',
-        fontSize: 25,
-        textAlign: 'center'
+        fontSize: RFPercentage(1.8), // 25
+        textAlign: 'center',
+        
     },
     listStyle: {
         maxHeight: 300,
