@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-
+import { RFPercentage } from "react-native-responsive-fontsize";
 import ProgressBarContainer from '../components/ProgressBarContainer'
 
 export default function ControlsContainer({ isConnected, sendOperationCode, handleRequestSmallData, handleRequestLargeData, readyToTest, smurfSelected, retrievePusherData, calibrated, storedInitHeight, isCalibrating, calibrateStatus, isGettingHeight, runningCommand, runningSmallTest, runningLargeTest }) {
@@ -86,21 +86,26 @@ const styles = StyleSheet.create({
     buttonStyle: {
         backgroundColor: '#315a2a',
         margin: 10,
-        padding: 5,
+        //padding: 5,
         borderRadius: 10,
         paddingVertical: 10,
-        width: 650
-
+        paddingHorizontal: "28%",
+        //width: 650
     },
     buttonText: {
         color: '#cddddd',
-        fontSize: 25,
+        fontSize: RFPercentage(2.1), // 25
         alignSelf: 'center'
     },
     largeButtonStyle: {
         width: 350
     },
     disabledButton: {
-        backgroundColor: 'grey'
+        backgroundColor: 'grey',
+        /*margin: 10,
+        //padding: 5,
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: "28%"*/
     }
 })
