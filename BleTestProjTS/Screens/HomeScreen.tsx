@@ -1,76 +1,83 @@
-import React, { useState } from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, TextInput } from 'react-native'
+import React, {useState} from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+} from 'react-native';
 
-export default function HomeScreen({ navigation, setResearcher, emptyResearcher }) {
+export default function HomeScreen({
+  navigation,
+  setResearcher,
+  emptyResearcher,
+}) {
+  const [tmpResearcherID, setTmpResearcherID] = useState('');
 
-    const [tmpResearcherID, setTmpResearcherID] = useState('')
+  return (
+    <View style={styles.pageContainer}>
+      <Text style={styles.titleText}>
+        Welcome to the Device Controller Application
+      </Text>
 
+      <TextInput
+        style={styles.inputStyle}
+        placeholder="Researcher ID"
+        placeholderTextColor="#2E2F2F"
+        onChangeText={value => setTmpResearcherID(value)}
+      />
 
+      <TouchableOpacity
+        style={styles.buttonStyle}
+        onPress={() => setResearcher(tmpResearcherID)}>
+        <Text style={styles.buttonText}>Save ResearcherID</Text>
+      </TouchableOpacity>
 
-    return (
-        <View style={styles.pageContainer}>
-            <Text style={styles.titleText}>Welcome to the Device Controller Application</Text>
+      <TouchableOpacity
+        style={styles.buttonStyle}
+        onPress={() => navigation.navigate('Testing')}
+        disabled={emptyResearcher}>
+        <Text style={styles.buttonText}>Go to Testing Screen</Text>
+      </TouchableOpacity>
 
-            <TextInput
-                style={styles.inputStyle}
-                placeholder='Researcher ID'
-                placeholderTextColor='#2E2F2F'
-                onChangeText={value => setTmpResearcherID(value)} />
-
-
-            <TouchableOpacity
-                style={styles.buttonStyle}
-                onPress={() => setResearcher(tmpResearcherID)}>
-                <Text style={styles.buttonText}>Save ResearcherID</Text>
-            </TouchableOpacity>
-
-
-
-            <TouchableOpacity
-                style={styles.buttonStyle}
-                onPress={() => navigation.navigate("Testing")}
-                disabled={emptyResearcher}>
-                <Text style={styles.buttonText}>Go to Testing Screen</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-                style={styles.buttonStyle}
-                onPress={() => navigation.navigate("Logs")} >
-                <Text style={styles.buttonText}>Go to Logs Screen</Text>
-            </TouchableOpacity>
-        </View>
-    )
+      <TouchableOpacity
+        style={styles.buttonStyle}
+        onPress={() => navigation.navigate('Logs')}>
+        <Text style={styles.buttonText}>Go to Logs Screen</Text>
+      </TouchableOpacity>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    pageContainer: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#2E2F2F'
-    },
-    buttonStyle: {
-        padding: 5,
-        backgroundColor: '#315a2a',
-        borderRadius: 10,
-        marginVertical: 10,
-        width: 350
-    },
-    buttonText: {
-        fontSize: 25,
-        color: '#cddddd',
-        textAlign: 'center'
-    },
-    titleText: {
-        fontSize: 35,
-        color: '#cddddd',
-    },
-    inputStyle: {
-        backgroundColor: '#cddddd',
-        width: 350,
-        textAlign: 'center',
-        marginTop: 100,
-        fontSize: 25,
-        marginVertical: 10
-    }
-})
+  pageContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#2E2F2F',
+  },
+  buttonStyle: {
+    padding: 5,
+    backgroundColor: '#315a2a',
+    borderRadius: 10,
+    marginVertical: 10,
+    width: "75%",
+  },
+  buttonText: {
+    fontSize: 25,
+    color: '#cddddd',
+    textAlign: 'center',
+  },
+  titleText: {
+    fontSize: 35,
+    color: '#cddddd',
+  },
+  inputStyle: {
+    backgroundColor: '#cddddd',
+    width: "75%",
+    textAlign: 'center',
+    marginTop: "15%",
+    fontSize: 25,
+    marginVertical: 10,
+  },
+});
