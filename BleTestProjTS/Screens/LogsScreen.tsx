@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#2E2F2F'
     },
     titleContainer: {
-        marginVertical: 15,
+        marginVertical: "3%",
         alignItems: 'center',
         textAlign: 'flex-start'
 
@@ -194,20 +194,21 @@ const styles = StyleSheet.create({
     titleStyle: {
         fontSize: 35,
         color: '#cddddd',
-        marginBottom: 10
+        marginBottom: "2%",
     },
     rowContainer: {
         flexDirection: 'row'
     },
     buttonStyle: {
         backgroundColor: '#315a2a',
-        marginHorizontal: 10,
+        marginHorizontal: "4%",
         borderRadius: 10,
         padding: 5
     },
     buttonText: {
         color: '#cddddd',
-        fontSize: 25
+        fontSize: 25,
+        textAlign: 'center',
     },
     listView: {
     }
