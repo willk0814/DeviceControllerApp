@@ -520,9 +520,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7Q9MN42JCM;
+				DEVELOPMENT_TEAM = W83P9QJY5A;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = BleTestProjTS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -533,7 +534,7 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.BleTestProjTS-test";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.BleTestProjTS-test1";
 				PRODUCT_NAME = BleTestProjTS;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -549,8 +550,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 7Q9MN42JCM;
+				DEVELOPMENT_TEAM = W83P9QJY5A;
 				INFOPLIST_FILE = BleTestProjTS/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -561,7 +563,7 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.BleTestProjTS-test";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.BleTestProjTS-test1";
 				PRODUCT_NAME = BleTestProjTS;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

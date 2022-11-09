@@ -1,7 +1,8 @@
 import React from 'react'
-import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, FlatList, StyleSheet, ViewBase } from 'react-native'
 import DeviceCard from '../components/DeviceCard'
 import { Device } from 'react-native-ble-plx'
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default function ConnectionPopUp({ scannedDevices, scanDevices, selectDevice, desiredDevice, clearScannedDevices, handleConnect, handleDisconnect, handleHideConnectionPopUp, isConnected, connectedDevice, smurfSelected, selectSMURF, selectPUSHER }) {
     return (
@@ -76,7 +77,7 @@ export default function ConnectionPopUp({ scannedDevices, scanDevices, selectDev
                 </View>
 
                 <TouchableOpacity
-                    style={[styles.buttonStyle, { width: 500 }]}
+                    style={[styles.buttonStyle, { width: "91.5%" }]} // 500
                     onPress={handleHideConnectionPopUp}>
                     <Text style={styles.buttonText}>Hide Pop Up</Text>
                 </TouchableOpacity>
@@ -90,28 +91,34 @@ export default function ConnectionPopUp({ scannedDevices, scanDevices, selectDev
 
 const styles = StyleSheet.create({
     pageContainer: {
+        maxWidth: "95%", // 85%,
+        maxHeight: 500,
         backgroundColor: 'black',
         borderRadius: 10,
-        padding: 5,
+        paddingHorizontal: 0, // 5
+        paddingVertical: 5,
         alignItems: 'center'
     },
     rowStyle: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        alignSelf: "center",
+        paddingHorizontal: 0
     },
     buttonStyle: {
         backgroundColor: '#315a2a',
         borderRadius: 10,
         margin: 5,
-        width: 250,
-        paddingHorizontal: 25
+        width: "45%", // 250,
+        paddingVertical: 10
     },
     redButton: {
         backgroundColor: 'red'
     },
     buttonText: {
         color: '#cddddd',
-        fontSize: 25,
-        textAlign: 'center'
+        fontSize: RFPercentage(2.1), // 25
+        textAlign: 'center',
+        
     },
     listStyle: {
         maxHeight: 300,
@@ -126,7 +133,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'grey'
     },
     pageBreak: {
-        width: '98%',
+        width: '91.5%', // 98%
         marginVertical: 5,
         backgroundColor: '#cddddd',
         height: 10,

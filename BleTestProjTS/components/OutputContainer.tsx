@@ -1,10 +1,11 @@
 import React from 'react'
 import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
 import { LineChart } from 'react-native-chart-kit'
-
+import { RFPercentage } from "react-native-responsive-fontsize";
 import ProgressBarContainer from '../components/ProgressBarContainer'
 
 const screenWidth = Dimensions.get('window').width * .90
+const screenHeight = Dimensions.get('window').height * .90
 
 export default function OutputContainer({ isConnected, currentTest, handleAccept, handleReject, readyToAccept, movePlant, readyToMove, isMovingToHome, runningCommand }) {
     let xLargeLabels = ["2.0", "2.5", "3.0", "3.5", "4.0", "4.5", "5.0", "5.5"]
@@ -49,7 +50,7 @@ export default function OutputContainer({ isConnected, currentTest, handleAccept
                             <LineChart
                                 data={data}
                                 width={screenWidth}
-                                height={400}
+                                height={screenHeight/4} // 400
                                 chartConfig={chartConfig}
                                 bezier={true} />
                         </View>
@@ -71,7 +72,7 @@ export default function OutputContainer({ isConnected, currentTest, handleAccept
                             </View>
                             <TouchableOpacity
                                 style={!readyToMove || runningCommand ?
-                                    [styles.buttonStyle, { width: 650 }, styles.disabledButton] : [styles.buttonStyle, { width: 650 }]}
+                                    [styles.buttonStyle, { width: "95%" }, styles.disabledButton] : [styles.buttonStyle, { width: "95%" }]}
                                 onPress={movePlant}
                                 disabled={!readyToMove || runningCommand}>
 
@@ -97,7 +98,9 @@ const styles = StyleSheet.create({
     pageContainer: {
         flex: 10,
         alignItems: 'center',
-        justify: 'content'
+        justify: 'content',
+        padding: 10,
+        maxHeight: "80%" // not here
     },
     titleStyle: {
         alignSelf: 'center',
@@ -113,20 +116,20 @@ const styles = StyleSheet.create({
         backgroundColor: '#315a2a',
         borderRadius: 10,
         padding: 5,
-        margin: 15,
+        margin: 5, // 15
         paddingVertical: 10,
-        width: 310
+        width: "46%" // 310
     },
     rejectButton: {
         backgroundColor: 'red'
     },
     buttonText: {
         color: '#cddddd',
-        fontSize: 25,
+        fontSize: RFPercentage(2.1), // 25
         paddingHorizontal: 12.5,
         alignSelf: 'center'
     },
     disabledButton: {
-        backgroundColor: 'grey'
+        backgroundColor: 'grey',
     }
 })
