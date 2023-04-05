@@ -59,6 +59,15 @@ export default function DataContainer({ isConnected, handleDisplayConnectionPopU
                             onChangeText={value => handlePlantID(value)}
                             value={plantID} />
                     </View>
+
+                    <View style={styles.rowStyle}>
+                        <Text style={[styles.dataLabels, { maxWidth: "40%"}]}>QR Scanner:   </Text>
+                        <TouchableOpacity
+                            style={styles.buttonStyle}>
+                            <Text style={[styles.dataLabels, { maxWidth: "100%"}]}>Scan QR Code</Text>
+                        </TouchableOpacity>
+                    </View>
+
                 </View>
 
                 <View style={styles.horizontalContainer}>
