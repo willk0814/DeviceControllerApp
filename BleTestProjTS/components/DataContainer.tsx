@@ -5,6 +5,9 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 
 import { Dropdown } from 'react-native-element-dropdown'
 
+import QRCodeScanner from 'react-native-qrcode-scanner';
+import { RNCamera } from 'react-native-camera';
+
 export default function DataContainer({ isConnected, handleDisplayConnectionPopUp, deviceName, handleTestType, handlePlantID, plantID, currentTestType }) {
     const [open, setOpen] = useState(false)
     const [value, setValue] = useState(null)
@@ -17,6 +20,7 @@ export default function DataContainer({ isConnected, handleDisplayConnectionPopU
         { label: 'F', value: 'F' },
         { label: 'Pusher', value: 'Pusher' }
     ])
+    const [qrData, setQRdata] = useState('')
 
 
     const renderTestTypeOption = (item) => {
@@ -67,6 +71,14 @@ export default function DataContainer({ isConnected, handleDisplayConnectionPopU
                             <Text style={[styles.dataLabels, { maxWidth: "100%"}]}>Scan QR Code</Text>
                         </TouchableOpacity>
                     </View>
+
+                    <QRCodeScanner
+                        onRead={({data}) => alert(data)}
+                        flashMode={RNCamera.Constants.FlashMode.auto}
+                        reactivate={true}
+                        reactivateTimeout={3000}
+                        showMarker={true}
+                    />
 
                 </View>
 
