@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, Modal } from 'react-native'
 import DropDownPicker from 'react-native-dropdown-picker'
 import { RFPercentage } from "react-native-responsive-fontsize";
 
@@ -20,7 +20,7 @@ export default function DataContainer({ isConnected, handleDisplayConnectionPopU
         { label: 'F', value: 'F' },
         { label: 'Pusher', value: 'Pusher' }
     ])
-    const [qrData, setQRdata] = useState('')
+    const [displayQRScan, setDisplayQRScan] = useState(false)
 
 
     const renderTestTypeOption = (item) => {
@@ -30,6 +30,16 @@ export default function DataContainer({ isConnected, handleDisplayConnectionPopU
             </View>
         )
     }
+
+    const showQRScan = () => {
+        setDisplayQRScan(true)
+    }
+
+    const closeQRScan = () => {
+        setDisplayQRScan(false)
+    }
+
+
 
     return (
         <View style={styles.pageContainer}>
@@ -67,18 +77,34 @@ export default function DataContainer({ isConnected, handleDisplayConnectionPopU
                     <View style={styles.rowStyle}>
                         <Text style={[styles.dataLabels, { maxWidth: "40%"}]}>QR Scanner:   </Text>
                         <TouchableOpacity
+                            onPress={showQRScan}
                             style={styles.buttonStyle}>
                             <Text style={[styles.dataLabels, { maxWidth: "100%"}]}>Scan QR Code</Text>
                         </TouchableOpacity>
                     </View>
 
-                    <QRCodeScanner
-                        onRead={({data}) => alert(data)}
-                        flashMode={RNCamera.Constants.FlashMode.auto}
-                        reactivate={true}
-                        reactivateTimeout={3000}
-                        showMarker={true}
-                    />
+                    <Modal
+                        transparent={false}
+                        visible={displayQRScan}
+                        animationType='fade'
+                        >
+                        <QRCodeScanner
+                            onRead={(e) => {handlePlantID(e.data), closeQRScan()}}
+                            flashMode={RNCamera.Constants.FlashMode.auto}
+                            showMarker={true}
+                            fadeIn={false}
+                            topContent={
+                                <Text style={[styles.titleStyle, { maxWidth: "100%"}]}>Scan QR Code or Barcode</Text>
+                            }
+                            bottomContent={
+                                <TouchableOpacity
+                                    onPress={closeQRScan}
+                                    style={styles.QRbuttonStyle}>
+                                    <Text style={[styles.QRdataLabels, { maxWidth: "100%"}]}>Close QR Scanner</Text>
+                                </TouchableOpacity>
+                            }
+                        />
+                    </Modal>
 
                 </View>
 
@@ -117,12 +143,14 @@ const styles = StyleSheet.create({
         flex: 0, // 1
         paddingTop: 25,
         minHeight: '5%',
-        //paddingRight: "25%"
+        paddingRight: 20,
+        paddingBottom: 25,
     },
     titleStyle: {
         alignSelf: 'center',
-        fontSize: 30,
-        color: '#cddddd'
+        fontSize: RFPercentage(4),
+        color: '#315a2a',
+        marginTop: RFPercentage(5),
     },
     rowStyle: {
         flexDirection: 'row',
@@ -139,6 +167,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 0, // 12.5
         //maxWidth: "35%"
     },
+    QRdataLabels: {
+        color: '#cddddd',
+        fontSize: RFPercentage(2.5),
+        paddingHorizontal: 0, // 12.5
+        //maxWidth: "35%"
+    },
     plantInputStyle: {
         backgroundColor: '#cddddd',
         marginLeft: 25,
@@ -150,6 +184,16 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: "55%", // 230
         alignItems: 'center',
+        //padding: 5,
+        paddingVertical: 10,
+        
+    },
+    QRbuttonStyle: {
+        backgroundColor: '#315a2a',
+        borderRadius: 10,
+        width: "55%", // 230
+        alignItems: 'center',
+        padding: 20,
     },
     verticalContainer: {
         flexDirection: 'column',
