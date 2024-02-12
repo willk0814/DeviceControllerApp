@@ -10,7 +10,7 @@ Our application solved these problems by offering an interface for the researche
 ## Demo
 If you click on the below image you will be taken to a YouTube video that demonstrates the user interface of the application.
 
-
+[![Device Controller Demo](https://img.youtube.com/vi/vc_H3_WQKBI/0.jpg)](https://www.youtube.com/watch?v=vc_H3_WQKBI)
 
 
 ## Download & Run Instructions
