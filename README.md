@@ -11,7 +11,6 @@ Our application solved these problems by offering an interface for the researche
 If you click on the below image you will be taken to a YouTube video that demonstrates the user interface of the application.
 
 
-If you click the following image you will be taken to a Youtube video that demonstrates the application successfully runnning a test on one of the corn plants.
 
 
 ## Download & Run Instructions
@@ -36,7 +35,20 @@ or if you are using yarn
 yarn install
 ```
   3. Since we are going to be creating an iOS build of this application we need to setup and install CocoaPods. To do this we are going to navigate to the iOS directory and run the following commands
-  In ios directory run 'pod setup' followed by 'pod install'
-  4. In project directory run 'xed ios' to open the xcode workspace
-  5. Connect your device and select it is as the run destination
-  6. Build the app
+
+```bash
+cd ios
+```
+```bash
+pod setup
+```
+```bash
+pod install
+```
+  4. In order to run the application on an iPad we need to open an instance of this project in Xcode; run the following command to do so
+```bash
+xed ios
+```
+  5. Since this application makes use of Native features (bluetooth) the only way to truly test it is to do so on a BLE enabled iPad.  So from this point onn you will need an iPad; go ahead and connect that iPad to your Mac and within Xcode select it as your build destination.
+  6. Build the application
+  7. If this is the first application that you have tested on your iPad you will need to authorize your developer account from within settings on the iPad.
